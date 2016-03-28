@@ -8,7 +8,7 @@ PiGPIO.pinMode(red_pin1, OUTPUT)
 PiGPIO.pinMode(red_pin2, OUTPUT)
 
 try 
-	for i in 1:10
+	for i in 1:20
 		PiGPIO.digitalWrite(red_pin1, HIGH)
         PiGPIO.digitalWrite(red_pin2, LOW)
 		sleep(0.5)
