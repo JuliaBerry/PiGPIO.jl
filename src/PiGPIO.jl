@@ -6,6 +6,7 @@ export pinMode, digitalWrite, analogWrite, digitalRead, analogRead, pullUpDownCo
       PUD_OFF,PUD_DOWN,PUD_UP,  PWM_MODE_MS,PWM_MODE_BAL,
       INT_EDGE_SETUP, INT_EDGE_FALLING, INT_EDGE_RISING, INT_EDGE_BOTH
 
+const LIBWIRINGPI_PATH = "/usr/lib/libwiringPi.so"
 
 @enum WPI_MODE WPI_MODE_PINS=0 WPI_MODE_GPIO=1 WPI_MODE_SYS=2 WPI_MODE_PHYS=3 WPI_MODE_PIFACE=4 WPI_MODE_UNITIALISED=-1
 
@@ -30,24 +31,24 @@ export pinMode, digitalWrite, analogWrite, digitalRead, analogRead, pullUpDownCo
 
 function __init__()
 	ENV["WIRINGPI_GPIOMEM"] = 1
-	ccall( (:wiringPiSetupGpio, "/usr/lib/libwiringPi.so"), Void, () )
+	ccall( (:wiringPiSetupGpio, LIBWIRINGPI_PATH), Void, () )
 end
 
-pinMode(pin, mode::PIN_MODE) = ccall( (:pinMode, "/usr/lib/libwiringPi.so"), Void, (Cint, Cint), pin, mode)
+pinMode(pin, mode::PIN_MODE) = ccall( (:pinMode, LIBWIRINGPI_PATH), Void, (Cint, Cint), pin, mode)
 
-digitalWrite(pin, value::PIN_VALUE) = ccall( (:digitalWrite, "/usr/lib/libwiringPi.so"), Void, (Cint, Cint), pin, value)
+digitalWrite(pin, value::PIN_VALUE) = ccall( (:digitalWrite, LIBWIRINGPI_PATH), Void, (Cint, Cint), pin, value)
 
-analogWrite(pin, value) = ccall( (:analogWrite, "/usr/lib/libwiringPi.so"), Void, (Cint, Cint), pin, value)
+analogWrite(pin, value) = ccall( (:analogWrite, LIBWIRINGPI_PATH), Void, (Cint, Cint), pin, value)
 
-digitalRead(pin) = PIN_VALUE(ccall( (:digitalRead, "/usr/lib/libwiringPi.so"), Cint, (Cint,), pin))
+digitalRead(pin) = PIN_VALUE(ccall( (:digitalRead, LIBWIRINGPI_PATH), Cint, (Cint,), pin))
 
-analogRead(pin) = ccall( (:analogRead, "/usr/lib/libwiringPi.so"), Cint, (Cint,), pin)
+analogRead(pin) = ccall( (:analogRead, LIBWIRINGPI_PATH), Cint, (Cint,), pin)
 
-pullUpDnControl(pin, pud::PUD) = ccall( (:pullUpDnControl, "/usr/lib/libwiringPi.so"), Void, (Cint, Cint), pin, pud)
+pullUpDnControl(pin, pud::PUD) = ccall( (:pullUpDnControl, LIBWIRINGPI_PATH), Void, (Cint, Cint), pin, pud)
 
-softPwmCreate(pin, init, range) = ccall( (:softPwmCreate, "/usr/lib/libwiringPi.so"), Cint, (Cint, Cint, Cint), pin, init, range)
+softPwmCreate(pin, init, range) = ccall( (:softPwmCreate, LIBWIRINGPI_PATH), Cint, (Cint, Cint, Cint), pin, init, range)
 
-softPwmWrite(pin, value) = ccall( (:softPwmWrite, "/usr/lib/libwiringPi.so"), Void, (Cint, Cint), pin, value)
+softPwmWrite(pin, value) = ccall( (:softPwmWrite, LIBWIRINGPI_PATH), Void, (Cint, Cint), pin, value)
 
 
 
