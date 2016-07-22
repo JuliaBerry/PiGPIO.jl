@@ -385,7 +385,7 @@ end
 end
 
 @struct type OutMsg
-    dummy::ASCIIString(12) # a bits type
+    dummy::Array{UInt8,1}(12) # a bits type
     res::Cuint # an array of bits types
 end
 
@@ -402,7 +402,7 @@ function _pigpio_command(sl::SockLock, cmd::Integer, p1::Integer, p2::Integer, r
    lock(sl.l)
    pack(sl.s, InMsg(cmd, p1, p2, 0))
    #sl.s.send(struct.pack('IIII', cmd, p1, p2, 0))
-   out = IOBuffer(readbytes(sl.s, 16))
+   out = IOBuffer(Base.read(sl.s, 16))
    msg = unpack(out, OutMsg )
    #dummy, res = struct.unpack('12sI', sl.s.recv(16))
    if rl
@@ -635,7 +635,7 @@ function func(self::WaitForEdge, gpio, level, tick)
 end
 
 type Pi
-    host::ASCIIString
+    host::String
     port::Int
     connected::Bool
     sl::SockLock
@@ -782,7 +782,7 @@ end
    function set_PWM_dutycycle(self::Pi, user_gpio, dutycycle)
 
       return _u2i(_pigpio_command(
-         self.sl, _PI_CMD_PWM, user_gpio, int(dutycycle)))
+         self.sl, _PI_CMD_PWM, user_gpio, Int(dutycycle)))
 
    end
 
