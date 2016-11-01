@@ -2,7 +2,7 @@
 
 #### Control GPIO pins on the Raspberry Pi from Julia
 
-<div class="text-center"><iframe width="560" height="315" src="https://www.youtube.com/embed/EvJ-OvTC5eE" frameborder="0" allowfullscreen></iframe></div>
+[![PiGPIO](https://img.youtube.com/vi/UmSQjkaATk8/0.jpg)](https://www.youtube.com/watch?v=UmSQjkaATk8)
 
 ##Installation and Usage
 
