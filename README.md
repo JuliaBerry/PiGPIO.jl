@@ -4,7 +4,7 @@
 
 [![PiGPIO](https://img.youtube.com/vi/UmSQjkaATk8/0.jpg)](https://www.youtube.com/watch?v=UmSQjkaATk8)
 
-##Installation and Usage
+## Installation and Usage
 
 This package depends on the native [pigpio](http://abyz.co.uk/rpi/pigpio/index.html) control library, which is usually present in recent versions of raspbian. The `pigpiod` daemon must be started on the pi before using this package. 
 
@@ -16,7 +16,7 @@ using PiGPIO
 pi=Pi() #connect to pigpiod daemon on localhost
 ```
 
-##Reference
+## Reference
 
 ```julia
 set_mode(p::Pi, pin::Int, mode)
