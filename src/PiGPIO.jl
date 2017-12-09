@@ -1575,7 +1575,7 @@ end
       if length(pulses)
          ext = bytearray()
          for p in pulses
-            ext.extend(struct.pack("III", p.gpio_on, p.gpio_off, p.delay))
+            ext.extend(pack("III", p.gpio_on, p.gpio_off, p.delay))
         end
          extents = [ext]
          return _u2i(_pigpio_command_ext(
@@ -1638,7 +1638,7 @@ end
       # I offset
       # s len data bytes
       if length(data)
-         extents = [struct.pack("III", bb_bits, bb_stop, offset), data]
+         extents = [pack("III", bb_bits, bb_stop, offset), data]
          return _u2i(_pigpio_command_ext(
             self.sl, _PI_CMD_WVAS, user_gpio, baud, length(data)+12, extents))
       else
@@ -2101,7 +2101,7 @@ end
       # I p3 4
       ## extension ##
       # I i2c_flags
-      extents = [struct.pack("I", i2c_flags)]
+      extents = [pack("I", i2c_flags)]
       return _u2i(_pigpio_command_ext(
          self.sl, _PI_CMD_I2CO, i2c_bus, i2c_address, 4, extents))
 
