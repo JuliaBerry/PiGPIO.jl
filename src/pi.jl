@@ -225,17 +225,19 @@ function remove(self::CallbackThread, callb)
         if newMonitor != self.monitor
             self.monitor = newMonitor
             _pigpio_command(
-            self.control, _PI_CMD_NB, self.handle, self.monitor)
+                self.control, _PI_CMD_NB, self.handle, self.monitor)
         end
     end
 end
 
-struct  CallbMSg
+
+struct CallbMSg
     seq::Cushort
     flags::Cushort
     tick::Cuint
     level::Cuint
 end
+
 
 """Runs the notification thread."""
 function run(self::CallbackThread)
@@ -258,13 +260,14 @@ function run(self::CallbackThread)
                 for  cb in self.callbacks
                     if cb.bit && changed
                         newLevel = 0
-                        if cb.bit & level
-                            newLevel = 1
-                        end
-                        if (cb.edge ^ newLevel)
-                            cb.func(cb.gpio, newLevel, tick)
-                        end
+                    elseif cb.bit & level
+                        newLevel = 1
                     end
+
+                    if (cb.edge ^ newLevel)
+                        cb.func(cb.gpio, newLevel, tick)
+                    end
+
                 end
             else
                 if flags & NTFY_FLAGS_WDOG

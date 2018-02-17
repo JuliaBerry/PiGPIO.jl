@@ -273,7 +273,7 @@ export
     OutMsg,
     Callback_ADT,
     CallbackThread #(threading.Thread),
-    CallbMSg,
+    # CallbMSg, # Can't find use
     Callback,
     WaitForEdge,
     Pi
@@ -401,7 +401,6 @@ using StrPack
 
 include("constants.jl")
 include("pi.jl")
-
 
 
 end # module PiGPIO
