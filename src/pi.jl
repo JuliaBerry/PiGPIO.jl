@@ -111,18 +111,18 @@ struct InMsg
 end
 
 struct OutMsg
-    dummy::Array{UInt8,1}(12) # a bits type
+    dummy::Array{UInt8,1} # a bits type
     res::Cuint # an array of bits types
 end
 
-   """
-   Runs a pigpio socket command.
+"""
+Runs a pigpio socket command.
 
-    sl:= command socket and lock.
-   cmd:= the command to be executed.
-    p1:= command parameter 1 (if applicable).
-     p2:=  command parameter 2 (if applicable).
-   """
+sl:= command socket and lock.
+cmd:= the command to be executed.
+p1:= command parameter 1 (if applicable).
+ p2:=  command parameter 2 (if applicable).
+"""
 function _pigpio_command(sl::SockLock, cmd::Integer, p1::Integer, p2::Integer, rl=true)
     lock(sl.l)
     pack(sl.s, InMsg(cmd, p1, p2, 0))
@@ -303,7 +303,7 @@ end
 
 """Cancels a callback by removing it from the notification thread."""
 function cancel(self)
-    filter(x->x!=self.callb, self.notify )
+    filter(x->x!=self.callb, self.notify)
 end
 
 

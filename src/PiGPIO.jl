@@ -272,11 +272,12 @@ export
     InMsg,
     OutMsg,
     Callback_ADT,
-    CallbackThread #(threading.Thread),
+    CallbackThread, #(threading.Thread),
     # CallbMSg, # Can't find use
     Callback,
     WaitForEdge,
-    Pi
+    Pi,
+
     # functions
     error_text,
     tickDiff,
@@ -285,7 +286,6 @@ export
     append,
     remove,
     run,
-    Callback,
     cancel,
     tally,
     reset_tally,
