@@ -103,14 +103,14 @@ function _u2i(x::UInt32)
 end
 
 
-struct InMsg
+@struct type InMsg
     cmd::Cuint # a bits type
     p1::Cuint # an array of bits types
     p2::Cuint # a string with a fixed number of bytes
     d::Cuint
 end
 
-struct OutMsg
+@struct type OutMsg
     dummy::Array{UInt8,1} # a bits type
     res::Cuint # an array of bits types
 end
@@ -231,7 +231,7 @@ function remove(self::CallbackThread, callb)
 end
 
 
-struct CallbMSg
+@struct type CallbMSg
     seq::Cushort
     flags::Cushort
     tick::Cuint
