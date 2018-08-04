@@ -292,7 +292,7 @@ mutable struct Callback
     callb::Callback_ADT
 end
 
-function Callback(notify, user_gpio, edge=RISING_EDGE, func=nothing)
+function Callback(notify, user_gpio::Int, edge::Int=RISING_EDGE, func=nothing)
     self = Callback(notify, 0, false, nothing)
     if func == nothing
         func = _tally
@@ -338,13 +338,13 @@ end
 """Encapsulates waiting for GPIO edges."""
 mutable struct WaitForEdge
     notify
-    callb
+    callb::Function
     trigger
     start
 end
 
 """Initialises a wait_for_edge."""
-function WaitForEdge( notify, gpio, edge, timeout)
+function WaitForEdge( notify, gpio::Int, edge, timeout)
     callb = _callback_ADT(gpio, edge, self.func)
     self = WaitForEdge(notify, callb, false, time())
     push!(self.notify, self.callb)
@@ -380,9 +380,9 @@ gpio:= 0-53.
 mode:= INPUT, OUTPUT, ALT0, ALT1, ALT2, ALT3, ALT4, ALT5.
 
 ...
-pi.set_mode( 4, pigpio.INPUT)  # GPIO  4 as input
-pi.set_mode(17, pigpio.OUTPUT) # GPIO 17 as output
-pi.set_mode(24, pigpio.ALT2)   # GPIO 24 as ALT2
+set_mode(pi,  4, pigpio.INPUT)  # GPIO  4 as input
+set_mode(pi, 17, pigpio.OUTPUT) # GPIO 17 as output
+set_mode(pi, 24, pigpio.ALT2)   # GPIO 24 as ALT2
 ...
 """
 function set_mode(self::Pi, gpio, mode)
@@ -409,7 +409,7 @@ Returns a value as follows
 . .
 
 ...
-print(pi.get_mode(0))
+print(get_mode(pi, 0))
 4
 ...
 """
@@ -425,9 +425,9 @@ gpio:= 0-53.
 pud:= PUD_UP, PUD_DOWN, PUD_OFF.
 
 ...
-pi.set_pull_up_down(17, pigpio.PUD_OFF)
-pi.set_pull_up_down(23, pigpio.PUD_UP)
-pi.set_pull_up_down(24, pigpio.PUD_DOWN)
+set_pull_up_down(pi, 17, pigpio.PUD_OFF)
+set_pull_up_down(pi, 23, pigpio.PUD_UP)
+set_pull_up_down(pi, 24, pigpio.PUD_DOWN)
 ...
 """
 function set_pull_up_down(self::Pi, gpio, pud)
@@ -441,14 +441,14 @@ Returns the GPIO level.
 gpio:= 0-53.
 
 ...
-pi.set_mode(23, pigpio.INPUT)
+set_mode(pi, 23, pigpio.INPUT)
 
-pi.set_pull_up_down(23, pigpio.PUD_DOWN)
-print(pi.read(23))
+set_pull_up_down(pi, 23, pigpio.PUD_DOWN)
+print(read(pi, 23))
 0
 
-pi.set_pull_up_down(23, pigpio.PUD_UP)
-print(pi.read(23))
+set_pull_up_down(pi, 23, pigpio.PUD_UP)
+print(read(pi, 23))
 1
 ...
 """
@@ -466,14 +466,14 @@ If PWM or servo pulses are active on the GPIO they are
 switched off.
 
 ...
-pi.set_mode(17, pigpio.OUTPUT)
+set_mode(pi, 17, pigpio.OUTPUT)
 
-pi.write(17,0)
-print(pi.read(17))
+write(pi, 17,0)
+print(read(pi, 17))
 0
 
-pi.write(17,1)
-print(pi.read(17))
+write(pi, 17,1)
+print(read(pi, 17))
 1
 ...
 """
@@ -491,11 +491,11 @@ dutycycle:= 0-range (range defaults to 255).
 The [*set_PWM_range*] function can change the default range of 255.
 
 ...
-pi.set_PWM_dutycycle(4,   0) # PWM off
-pi.set_PWM_dutycycle(4,  64) # PWM 1/4 on
-pi.set_PWM_dutycycle(4, 128) # PWM 1/2 on
-pi.set_PWM_dutycycle(4, 192) # PWM 3/4 on
-pi.set_PWM_dutycycle(4, 255) # PWM full on
+set_PWM_dutycycle(pi, 4,   0) # PWM off
+set_PWM_dutycycle(pi, 4,  64) # PWM 1/4 on
+set_PWM_dutycycle(pi, 4, 128) # PWM 1/2 on
+set_PWM_dutycycle(pi, 4, 192) # PWM 3/4 on
+set_PWM_dutycycle(pi, 4, 255) # PWM full on
 ...
 """
 function set_PWM_dutycycle(self::Pi, user_gpio, dutycycle)
@@ -521,12 +521,12 @@ If hardware PWM is active on the GPIO the reported dutycycle
 will be out of a 1000000 (1M).
 
 ...
-pi.set_PWM_dutycycle(4, 25)
-print(pi.get_PWM_dutycycle(4))
+set_PWM_dutycycle(pi, 4, 25)
+print(get_PWM_dutycycle(pi, 4))
 25
 
-pi.set_PWM_dutycycle(4, 203)
-print(pi.get_PWM_dutycycle(4))
+set_PWM_dutycycle(pi, 4, 203)
+print(get_PWM_dutycycle(pi, 4))
 203
 ...
 """
@@ -541,9 +541,9 @@ user_gpio:= 0-31.
  range_:= 25-40000.
 
 ...
-pi.set_PWM_range(9, 100)  # now  25 1/4,   50 1/2,   75 3/4 on
-pi.set_PWM_range(9, 500)  # now 125 1/4,  250 1/2,  375 3/4 on
-pi.set_PWM_range(9, 3000) # now 750 1/4, 1500 1/2, 2250 3/4 on
+set_PWM_range(pi, 9, 100)  # now  25 1/4,   50 1/2,   75 3/4 on
+set_PWM_range(pi, 9, 500)  # now 125 1/4,  250 1/2,  375 3/4 on
+set_PWM_range(pi, 9, 3000) # now 750 1/4, 1500 1/2, 2250 3/4 on
 ...
 """
 function set_PWM_range(self::Pi, user_gpio, range_)
@@ -559,8 +559,8 @@ If a hardware clock or hardware PWM is active on the GPIO
 the reported range will be 1000000 (1M).
 
 ...
-pi.set_PWM_range(9, 500)
-print(pi.get_PWM_range(9))
+set_PWM_range(pi, 9, 500)
+print(get_PWM_range(pi, 9))
 500
 ...
 """
@@ -581,8 +581,8 @@ If hardware PWM is active on the GPIO the reported real range
 will be approximately 250M divided by the set PWM frequency.
 
 ...
-pi.set_PWM_frequency(4, 800)
-print(pi.get_PWM_real_range(4))
+set_PWM_frequency(pi, 4, 800)
+print(get_PWM_real_range(pi, 4))
 250
 ...
 """
@@ -635,12 +635,12 @@ rate
 . .
 
 ...
-pi.set_PWM_frequency(4,0)
-print(pi.get_PWM_frequency(4))
+set_PWM_frequency(pi, 4,0)
+print(get_PWM_frequency(pi, 4))
 10
 
-pi.set_PWM_frequency(4,100000)
-print(pi.get_PWM_frequency(4))
+set_PWM_frequency(pi, 4,100000)
+print(get_PWM_frequency(pi, 4))
 8000
 ...
 """
@@ -666,12 +666,12 @@ If hardware PWM is active on the GPIO the reported frequency
 will be that set by [*hardware_PWM*].
 
 ...
-pi.set_PWM_frequency(4,0)
-print(pi.get_PWM_frequency(4))
+set_PWM_frequency(pi, 4,0)
+print(get_PWM_frequency(pi, 4))
 10
 
-pi.set_PWM_frequency(4, 800)
-print(pi.get_PWM_frequency(4))
+set_PWM_frequency(pi, 4, 800)
+print(get_PWM_frequency(pi, 4))
 800
 ...
 """
@@ -697,10 +697,10 @@ You can DAMAGE a servo if you command it to move beyond its
 limits.
 
 ...
-pi.set_servo_pulsewidth(17, 0)    # off
-pi.set_servo_pulsewidth(17, 1000) # safe anti-clockwise
-pi.set_servo_pulsewidth(17, 1500) # centre
-pi.set_servo_pulsewidth(17, 2000) # safe clockwise
+set_servo_pulsewidth(pi, 17, 0)    # off
+set_servo_pulsewidth(pi, 17, 1000) # safe anti-clockwise
+set_servo_pulsewidth(pi, 17, 1500) # centre
+set_servo_pulsewidth(pi, 17, 2000) # safe clockwise
 ...
 """
 function set_servo_pulsewidth(self::Pi, user_gpio, pulsewidth)
@@ -716,12 +716,12 @@ user_gpio:= 0-31.
 Returns the servo pulsewidth.
 
 ...
-pi.set_servo_pulsewidth(4, 525)
-print(pi.get_servo_pulsewidth(4))
+set_servo_pulsewidth(pi, 4, 525)
+print(get_servo_pulsewidth(pi, 4))
 525
 
-pi.set_servo_pulsewidth(4, 2130)
-print(pi.get_servo_pulsewidth(4))
+set_servo_pulsewidth(pi, 4, 2130)
+print(get_servo_pulsewidth(pi, 4))
 2130
 ...
 """
@@ -772,9 +772,9 @@ level: indicates the level of each GPIO.  If bit 1<<x is set
 then GPIO x is high.
 
 ...
-h = pi.notify_open()
+h = notify_open(pi, )
 if h >= 0
-    pi.notify_begin(h, 1234)
+    notify_begin(pi, h, 1234)
 ...
 """
 function notify_open(self::Pi)
@@ -794,9 +794,9 @@ The following code starts notifications for GPIO 1, 4,
 6, 7, and 10 (1234 = 0x04D2 = 0b0000010011010010).
 
 ...
-h = pi.notify_open()
+h = notify_open(pi, )
 if h >= 0
-    pi.notify_begin(h, 1234)
+    notify_begin(pi, h, 1234)
 ...
 """
 function notify_begin(self::Pi, handle, bits)
@@ -812,13 +812,13 @@ Notifications for the handle are suspended until
 [*notify_begin*] is called again.
 
 ...
-h = pi.notify_open()
+h = notify_open(pi, )
 if h >= 0
-    pi.notify_begin(h, 1234)
+    notify_begin(pi, h, 1234)
     ...
-    pi.notify_pause(h)
+    notify_pause(pi, h)
     ...
-    pi.notify_begin(h, 1234)
+    notify_begin(pi, h, 1234)
     ...
 ...
 """
@@ -832,11 +832,11 @@ Stops notifications on a handle and releases the handle for reuse.
 handle:= >=0 (as returned by a prior call to [*notify_open*])
 
 ...
-h = pi.notify_open()
+h = notify_open(pi, )
 if h >= 0
-    pi.notify_begin(h, 1234)
+    notify_begin(pi, h, 1234)
     ...
-    pi.notify_close(h)
+    notify_close(pi, h)
     ...
 ...
 """
@@ -864,8 +864,8 @@ The callback class interprets the flags and will
 call registered callbacks for the GPIO with level TIMEOUT.
 
 ...
-pi.set_watchdog(23, 1000) # 1000 ms watchdog on GPIO 23
-pi.set_watchdog(23, 0)    # cancel watchdog on GPIO 23
+set_watchdog(pi, 23, 1000) # 1000 ms watchdog on GPIO 23
+set_watchdog(pi, 23, 0)    # cancel watchdog on GPIO 23
 ...
 """
 function set_watchdog(self::Pi, user_gpio, wdog_timeout)
@@ -880,7 +880,7 @@ The returned 32 bit integer has a bit set if the corresponding
 GPIO is high.  GPIO n has bit value (1<<n).
 
 ...
-print(bin(pi.read_bank_1()))
+print(bin(read_bank_1(pi, )))
 0b10010100000011100100001001111
 ...
 """
@@ -895,7 +895,7 @@ The returned 32 bit integer has a bit set if the corresponding
 GPIO is high.  GPIO n has bit value (1<<(n-32)).
 
 ...
-print(bin(pi.read_bank_2()))
+print(bin(read_bank_2(pi, )))
 0b1111110000000000000000
 ...
 """
@@ -913,7 +913,7 @@ A returned status of PI_SOME_PERMITTED indicates that the user
 is not allowed to write to one or more of the GPIO.
 
 ...
-pi.clear_bank_1(int("111110010000",2))
+clear_bank_1(int(pi, "111110010000",2))
 ...
 """
 function clear_bank_1(self::Pi, bits)
@@ -930,7 +930,7 @@ A returned status of PI_SOME_PERMITTED indicates that the user
 is not allowed to write to one or more of the GPIO.
 
 ...
-pi.clear_bank_2(0x1010)
+clear_bank_2(pi, 0x1010)
 ...
 """
 function clear_bank_2(self::Pi, bits)
@@ -947,7 +947,7 @@ A returned status of PI_SOME_PERMITTED indicates that the user
 is not allowed to write to one or more of the GPIO.
 
 ...
-pi.set_bank_1(int("111110010000",2))
+set_bank_1(int(pi, "111110010000",2))
 ...
 """
 function set_bank_1(self::Pi, bits)
@@ -964,7 +964,7 @@ A returned status of PI_SOME_PERMITTED indicates that the user
 is not allowed to write to one or more of the GPIO.
 
 ...
-pi.set_bank_2(0x303)
+set_bank_2(pi, 0x303)
 ...
 """
 function set_bank_2(self::Pi, bits)
@@ -1006,9 +1006,9 @@ likely crash the Pi.  The password is given by or'ing 0x5A000000
 with the GPIO number.
 
 ...
-pi.hardware_clock(4, 5000) # 5 KHz clock on GPIO 4
+hardware_clock(pi, 4, 5000) # 5 KHz clock on GPIO 4
 
-pi.hardware_clock(4, 40000000) # 40 MHz clock on GPIO 4
+hardware_clock(pi, 4, 40000000) # 40 MHz clock on GPIO 4
 ...
 """
 function hardware_clock(self::Pi, gpio, clkfreq)
@@ -1063,9 +1063,9 @@ frequencies will have fewer steps.  PWMduty is
 automatically scaled to take this into account.
 
 ...
-pi.hardware_PWM(18, 800, 250000) # 800Hz 25% dutycycle
+hardware_PWM(pi, 18, 800, 250000) # 800Hz 25% dutycycle
 
-pi.hardware_PWM(18, 2000, 750000) # 2000Hz 75% dutycycle
+hardware_PWM(pi, 18, 2000, 750000) # 2000Hz 75% dutycycle
 ...
 """
 
@@ -1091,9 +1091,9 @@ unsigned 32 bit quantity tick wraps around approximately
 every 71.6 minutes.
 
 ...
-t1 = pi.get_current_tick()
+t1 = get_current_tick(pi, )
 time.sleep(1)
-t2 = pi.get_current_tick()
+t2 = get_current_tick(pi, )
 ...
 """
 function get_current_tick(self::Pi)
@@ -1121,7 +1121,7 @@ If the hardware revision can not be found or is not a valid
 hexadecimal number the function returns 0.
 
 ...
-print(pi.get_hardware_revision())
+print(get_hardware_revision(pi, ))
 2
 ...
 """
@@ -1133,7 +1133,7 @@ end
 Returns the pigpio software version.
 
 ...
-v = pi.get_pigpio_version()
+v = get_pigpio_version(pi, )
 ...
 """
 function get_pigpio_version(self::Pi)
@@ -1145,7 +1145,7 @@ Clears all waveforms and any data added by calls to the
 [*wave_add_**] functions.
 
 ...
-pi.wave_clear()
+wave_clear(pi, )
 ...
 """
 function wave_clear(self::Pi)
@@ -1160,7 +1160,7 @@ automatically called after a waveform is created with the
 [*wave_create*] function.
 
 ...
-pi.wave_add_new()
+wave_add_new(pi, )
 ...
 """
 function wave_add_new(self::Pi)
@@ -1188,8 +1188,8 @@ solely of a delay.
 G1=4
 G2=24
 
-pi.set_mode(G1, pigpio.OUTPUT)
-pi.set_mode(G2, pigpio.OUTPUT)
+set_mode(pi, G1, pigpio.OUTPUT)
+set_mode(pi, G2, pigpio.OUTPUT)
 
 flash_500=[] # flash every 500 ms
 flash_100=[] # flash every 100 ms
@@ -1202,29 +1202,29 @@ flash_500.append(pigpio.pulse(1<<G2, 1<<G1, 500000))
 flash_100.append(pigpio.pulse(1<<G1, 1<<G2, 100000))
 flash_100.append(pigpio.pulse(1<<G2, 1<<G1, 100000))
 
-pi.wave_clear() # clear any existing waveforms
+wave_clear(pi, ) # clear any existing waveforms
 
-pi.wave_add_generic(flash_500) # 500 ms flashes
-f500 = pi.wave_create() # create and save id
+wave_add_generic(pi, flash_500) # 500 ms flashes
+f500 = wave_create(pi, ) # create and save id
 
-pi.wave_add_generic(flash_100) # 100 ms flashes
-f100 = pi.wave_create() # create and save id
+wave_add_generic(pi, flash_100) # 100 ms flashes
+f100 = wave_create(pi, ) # create and save id
 
-pi.wave_send_repeat(f500)
-
-time.sleep(4)
-
-pi.wave_send_repeat(f100)
+wave_send_repeat(pi, f500)
 
 time.sleep(4)
 
-pi.wave_send_repeat(f500)
+wave_send_repeat(pi, f100)
 
 time.sleep(4)
 
-pi.wave_tx_stop() # stop waveform
+wave_send_repeat(pi, f500)
 
-pi.wave_clear() # clear all waveforms
+time.sleep(4)
+
+wave_tx_stop(pi, ) # stop waveform
+
+wave_clear(pi, ) # clear all waveforms
 ...
 """
 function wave_add_generic(self::Pi, pulses)
@@ -1277,13 +1277,13 @@ For [*bb_bits*] 9-16 there will be two bytes per character.
 For [*bb_bits*] 17-32 there will be four bytes per character.
 
 ...
-pi.wave_add_serial(4, 300, 'Hello world')
+wave_add_serial(pi, 4, 300, 'Hello world')
 
-pi.wave_add_serial(4, 300, b"Hello world")
+wave_add_serial(pi, 4, 300, b"Hello world")
 
-pi.wave_add_serial(4, 300, b'\\x23\\x01\\x00\\x45')
+wave_add_serial(pi, 4, 300, b'\\x23\\x01\\x00\\x45')
 
-pi.wave_add_serial(17, 38400, [23, 128, 234], 5000)
+wave_add_serial(pi, 17, 38400, [23, 128, 234], 5000)
 ...
 """
 function wave_add_serial(
@@ -1349,7 +1349,7 @@ When a waveform is started each pulse is executed in order with
 the specified delay between the pulse and the next.
 
 ...
-wid = pi.wave_create()
+wid = wave_create(pi, )
 ...
 """
 function wave_create(self::Pi)
@@ -1364,9 +1364,9 @@ wave_id:= >=0 (as returned by a prior call to [*wave_create*]).
 Wave ids are allocated in order, 0, 1, 2, etc.
 
 ...
-pi.wave_delete(6) # delete waveform with id 6
+wave_delete(pi, 6) # delete waveform with id 6
 
-pi.wave_delete(0) # delete waveform with id 0
+wave_delete(pi, 0) # delete waveform with id 0
 ...
 """
 function wave_delete(self::Pi, wave_id)
@@ -1403,7 +1403,7 @@ wave_id:= >=0 (as returned by a prior call to [*wave_create*]).
 Returns the number of DMA control blocks used in the waveform.
 
 ...
-cbs = pi.wave_send_once(wid)
+cbs = wave_send_once(pi, wid)
 ...
 """
 function wave_send_once(self::Pi, wave_id)
@@ -1423,7 +1423,7 @@ wave_id:= >=0 (as returned by a prior call to [*wave_create*]).
 Returns the number of DMA control blocks used in the waveform.
 
 ...
-cbs = pi.wave_send_repeat(wid)
+cbs = wave_send_repeat(pi, wid)
 ...
 """
 function wave_send_repeat(self::Pi, wave_id)
@@ -1458,7 +1458,7 @@ wave_id:= >=0 (as returned by a prior call to [*wave_create*]).
 Returns the number of DMA control blocks used in the waveform.
 
 ...
-cbs = pi.wave_send_using_mode(wid, WAVE_MODE_REPEAT_SYNC)
+cbs = wave_send_using_mode(pi, wid, WAVE_MODE_REPEAT_SYNC)
 ...
 """
 function wave_send_using_mode(self::Pi, wave_id, mode)
@@ -1476,7 +1476,7 @@ WAVE_NOT_FOUND (9998) - transmitted wave not found.
 NO_TX_WAVE (9999) - no wave being transmitted.
 
 ...
-wid = pi.wave_tx_at()
+wid = wave_tx_at(pi, )
 ...
 """
 function wave_tx_at(self::Pi)
@@ -1488,12 +1488,12 @@ Returns 1 if a waveform is currently being transmitted,
 otherwise 0.
 
 ...
-pi.wave_send_once(0) # send first waveform
+wave_send_once(pi, 0) # send first waveform
 
-while pi.wave_tx_busy(): # wait for waveform to be sent
+while wave_tx_busy(pi, ): # wait for waveform to be sent
 time.sleep(0.1)
 
-pi.wave_send_once(1) # send next waveform
+wave_send_once(pi, 1) # send next waveform
 ...
 """
 function wave_tx_busy(self::Pi)
@@ -1507,11 +1507,11 @@ This function is intended to stop a waveform started with
 wave_send_repeat.
 
 ...
-pi.wave_send_repeat(3)
+wave_send_repeat(pi, 3)
 
 time.sleep(5)
 
-pi.wave_tx_stop()
+wave_tx_stop(pi, )
 ...
 """
 function wave_tx_stop(self::Pi)
@@ -1568,14 +1568,14 @@ wid=[0]*WAVES
 
 pi = pigpio.pi() # Connect to local Pi.
 
-pi.set_mode(GPIO, pigpio.OUTPUT);
+set_mode(pi, GPIO, pigpio.OUTPUT);
 
 for i in range(WAVES)
 pi.wave_add_generic([
 pigpio.pulse(1<<GPIO, 0, 20),
 pigpio.pulse(0, 1<<GPIO, (i+1)*200)]);
 
-wid[i] = pi.wave_create();
+wid[i] = wave_create(pi, );
 
 pi.wave_chain([
 wid[4], wid[3], wid[2],       # transmit waves 4+3+2
@@ -1595,13 +1595,13 @@ wid[4], wid[4], wid[4],       # transmit waves 4+4+4
 wid[0], wid[0], wid[0],       # transmit waves 0+0+0
 ])
 
-while pi.wave_tx_busy()
+while wave_tx_busy(pi, )
 time.sleep(0.1);
 
 for i in range(WAVES)
-pi.wave_delete(wid[i])
+wave_delete(pi, wid[i])
 
-pi.stop()
+stop(pi, )
 ...
 """
 function wave_chain(self::Pi, data)
@@ -1618,7 +1618,7 @@ end
 Returns the length in microseconds of the current waveform.
 
 ...
-micros = pi.wave_get_micros()
+micros = wave_get_micros(pi, )
 ...
 """
 function wave_get_micros(self::Pi)
@@ -1629,7 +1629,7 @@ end
 Returns the maximum possible size of a waveform in microseconds.
 
 ...
-micros = pi.wave_get_max_micros()
+micros = wave_get_max_micros(pi, )
 ...
 """
 function wave_get_max_micros(self::Pi)
@@ -1640,7 +1640,7 @@ end
 Returns the length in pulses of the current waveform.
 
 ...
-pulses = pi.wave_get_pulses()
+pulses = wave_get_pulses(pi, )
 ...
 """
 function wave_get_pulses(self::Pi)
@@ -1651,7 +1651,7 @@ end
 Returns the maximum possible size of a waveform in pulses.
 
 ...
-pulses = pi.wave_get_max_pulses()
+pulses = wave_get_max_pulses(pi, )
 ...
 """
 function wave_get_max_pulses(self::Pi)
@@ -1663,7 +1663,7 @@ Returns the length in DMA control blocks of the current
 waveform.
 
 ...
-cbs = pi.wave_get_cbs()
+cbs = wave_get_cbs(pi, )
 ...
 """
 function wave_get_cbs(self::Pi)
@@ -1675,7 +1675,7 @@ Returns the maximum possible size of a waveform in DMA
 control blocks.
 
 ...
-cbs = pi.wave_get_max_cbs()
+cbs = wave_get_max_cbs(pi, )
 ...
 """
 function wave_get_max_cbs(self::Pi)
@@ -1716,7 +1716,7 @@ Count (8 bits): A byte defining the length of a block operation.
 . .
 
 ...
-h = pi.i2c_open(1, 0x53) # open device at address 0x53 on bus 1
+h = i2c_open(pi, 1, 0x53) # open device at address 0x53 on bus 1
 ...
 """
 function i2c_open(self::Pi, i2c_bus, i2c_address, i2c_flags=0)
@@ -1736,7 +1736,7 @@ Closes the I2C device associated with handle.
 handle:= >=0 (as returned by a prior call to [*i2c_open*]).
 
 ...
-pi.i2c_close(h)
+i2c_close(pi, h)
 ...
 """
 function i2c_close(self::Pi, handle)
@@ -1755,8 +1755,8 @@ S Addr bit [A] P
 . .
 
 ...
-pi.i2c_write_quick(0, 1) # send 1 to device 0
-pi.i2c_write_quick(3, 0) # send 0 to device 3
+i2c_write_quick(pi, 0, 1) # send 1 to device 0
+i2c_write_quick(pi, 3, 0) # send 0 to device 3
 ...
 """
 function i2c_write_quick(self::Pi, handle, bit)
@@ -1775,8 +1775,8 @@ S Addr Wr [A] byte_val [A] P
 . .
 
 ...
-pi.i2c_write_byte(1, 17)   # send byte   17 to device 1
-pi.i2c_write_byte(2, 0x23) # send byte 0x23 to device 2
+i2c_write_byte(pi, 1, 17)   # send byte   17 to device 1
+i2c_write_byte(pi, 2, 0x23) # send byte 0x23 to device 2
 ...
 """
 function i2c_write_byte(self::Pi, handle, byte_val)
@@ -1795,7 +1795,7 @@ S Addr Rd [A] [Data] NA P
 . .
 
 ...
-b = pi.i2c_read_byte(2) # read a byte from device 2
+b = i2c_read_byte(pi, 2) # read a byte from device 2
 ...
 """
 function i2c_read_byte(self::Pi, handle)
@@ -1817,10 +1817,10 @@ S Addr Wr [A] reg [A] byte_val [A] P
 
 ...
 # send byte 0xC5 to reg 2 of device 1
-pi.i2c_write_byte_data(1, 2, 0xC5)
+i2c_write_byte_data(pi, 1, 2, 0xC5)
 
 # send byte 9 to reg 4 of device 2
-pi.i2c_write_byte_data(2, 4, 9)
+i2c_write_byte_data(pi, 2, 4, 9)
 ...
 """
 function i2c_write_byte_data(self::Pi, handle, reg, byte_val)
@@ -1850,10 +1850,10 @@ S Addr Wr [A] reg [A] word_val_Low [A] word_val_High [A] P
 
 ...
 # send word 0xA0C5 to reg 5 of device 4
-pi.i2c_write_word_data(4, 5, 0xA0C5)
+i2c_write_word_data(pi, 4, 5, 0xA0C5)
 
 # send word 2 to reg 2 of device 5
-pi.i2c_write_word_data(5, 2, 23)
+i2c_write_word_data(pi, 5, 2, 23)
 ...
 """
 function i2c_write_word_data(self::Pi, handle, reg, word_val)
@@ -1882,10 +1882,10 @@ S Addr Wr [A] reg [A] S Addr Rd [A] [Data] NA P
 
 ...
 # read byte from reg 17 of device 2
-b = pi.i2c_read_byte_data(2, 17)
+b = i2c_read_byte_data(pi, 2, 17)
 
 # read byte from reg  1 of device 0
-b = pi.i2c_read_byte_data(0, 1)
+b = i2c_read_byte_data(pi, 0, 1)
 ...
 """
 function i2c_read_byte_data(self, handle, reg)
@@ -1906,10 +1906,10 @@ S Addr Wr [A] reg [A] S Addr Rd [A] [DataLow] A [DataHigh] NA P
 
 ...
 # read word from reg 2 of device 3
-w = pi.i2c_read_word_data(3, 2)
+w = i2c_read_word_data(pi, 3, 2)
 
 # read word from reg 7 of device 2
-w = pi.i2c_read_word_data(2, 7)
+w = i2c_read_word_data(pi, 2, 7)
 ...
 """
 function i2c_read_word_data(self, handle, reg)
@@ -1931,8 +1931,8 @@ S Addr Rd [A] [DataLow] A [DataHigh] NA P
 . .
 
 ...
-r = pi.i2c_process_call(h, 4, 0x1231)
-r = pi.i2c_process_call(h, 6, 0)
+r = i2c_process_call(pi, h, 4, 0x1231)
+r = i2c_process_call(pi, h, 6, 0)
 ...
 """
 function i2c_process_call(self, handle, reg, word_val)
@@ -1962,13 +1962,13 @@ datan [A] P
 . .
 
 ...
-pi.i2c_write_block_data(4, 5, b'hello')
+i2c_write_block_data(pi, 4, 5, b'hello')
 
-pi.i2c_write_block_data(4, 5, "data bytes")
+i2c_write_block_data(pi, 4, 5, "data bytes")
 
-pi.i2c_write_block_data(5, 0, b'\\x00\\x01\\x22')
+i2c_write_block_data(pi, 5, 0, b'\\x00\\x01\\x22')
 
-pi.i2c_write_block_data(6, 2, [0, 1, 0x22])
+i2c_write_block_data(pi, 6, 2, [0, 1, 0x22])
 ...
 """
 function i2c_write_block_data(self, handle, reg, data)
@@ -2006,7 +2006,7 @@ number of bytes read will be less than zero (and will contain
 the error code).
 
 ...
-(b, d) = pi.i2c_read_block_data(h, 10)
+(b, d) = i2c_read_block_data(pi, h, 10)
 if b >= 0
 # process data
 else
@@ -2051,13 +2051,13 @@ number of bytes read will be less than zero (and will contain
 the error code).
 
 ...
-(b, d) = pi.i2c_block_process_call(h, 10, b'\\x02\\x05\\x00')
+(b, d) = i2c_block_process_call(pi, h, 10, b'\\x02\\x05\\x00')
 
-(b, d) = pi.i2c_block_process_call(h, 10, b'abcdr')
+(b, d) = i2c_block_process_call(pi, h, 10, b'abcdr')
 
-(b, d) = pi.i2c_block_process_call(h, 10, "abracad")
+(b, d) = i2c_block_process_call(pi, h, 10, "abracad")
 
-(b, d) = pi.i2c_block_process_call(h, 10, [2, 5, 16])
+(b, d) = i2c_block_process_call(pi, h, 10, [2, 5, 16])
 ...
 """
 function i2c_block_process_call(self::Pi, handle, reg, data)
@@ -2092,13 +2092,13 @@ S Addr Wr [A] reg [A] data0 [A] data1 [A] ... [A] datan [NA] P
 . .
 
 ...
-pi.i2c_write_i2c_block_data(4, 5, 'hello')
+i2c_write_i2c_block_data(pi, 4, 5, 'hello')
 
-pi.i2c_write_i2c_block_data(4, 5, b'hello')
+i2c_write_i2c_block_data(pi, 4, 5, b'hello')
 
-pi.i2c_write_i2c_block_data(5, 0, b'\\x00\\x01\\x22')
+i2c_write_i2c_block_data(pi, 5, 0, b'\\x00\\x01\\x22')
 
-pi.i2c_write_i2c_block_data(6, 2, [0, 1, 0x22])
+i2c_write_i2c_block_data(pi, 6, 2, [0, 1, 0x22])
 ...
 """
 function i2c_write_i2c_block_data(self::Pi, handle, reg, data)
@@ -2134,7 +2134,7 @@ number of bytes read will be less than zero (and will contain
 the error code).
 
 ...
-(b, d) = pi.i2c_read_i2c_block_data(h, 4, 32)
+(b, d) = i2c_read_i2c_block_data(pi, h, 4, 32)
 if b >= 0
 # process data
 else
@@ -2179,7 +2179,7 @@ number of bytes read will be less than zero (and will contain
 the error code).
 
 ...
-(count, data) = pi.i2c_read_device(h, 12)
+(count, data) = i2c_read_device(pi, h, 12)
 ...
 """
 function i2c_read_device(self::Pi, handle, count)
@@ -2206,13 +2206,13 @@ S Addr Wr [A] data0 [A] data1 [A] ... [A] datan [A] P
 . .
 
 ...
-pi.i2c_write_device(h, b"\\x12\\x34\\xA8")
+i2c_write_device(pi, h, b"\\x12\\x34\\xA8")
 
-pi.i2c_write_device(h, b"help")
+i2c_write_device(pi, h, b"help")
 
-pi.i2c_write_device(h, 'help')
+i2c_write_device(pi, h, 'help')
 
-pi.i2c_write_device(h, [23, 56, 231])
+i2c_write_device(pi, h, [23, 56, 231])
 ...
 """
 function i2c_write_device(self::Pi, handle, data)
@@ -2243,7 +2243,7 @@ number of bytes read will be less than zero (and will contain
 the error code).
 
 ...
-(count, data) = pi.i2c_zip(h, [4, 0x53, 7, 1, 0x32, 6, 6, 0])
+(count, data) = i2c_zip(pi, h, [4, 0x53, 7, 1, 0x32, 6, 6, 0])
 ...
 
 The following command codes are supported
@@ -2325,7 +2325,7 @@ The GPIO used for SDA and SCL must have pull-ups to 3V3 connected.
 As a guide the hardware pull-ups on pins 3 and 5 are 1k8 in value.
 
 ...
-h = pi.bb_i2c_open(4, 5, 50000) # bit bang on GPIO 4/5 at 50kbps
+h = bb_i2c_open(pi, 4, 5, 50000) # bit bang on GPIO 4/5 at 50kbps
 ...
 """
 function bb_i2c_open(self::Pi, SDA, SCL, baud=100000)
@@ -2349,7 +2349,7 @@ SDA:= 0-31, the SDA GPIO used in a prior call to [*bb_i2c_open*]
 Returns 0 if OK, otherwise PI_BAD_USER_GPIO, or PI_NOT_I2C_GPIO.
 
 ...
-pi.bb_i2c_close(SDA)
+bb_i2c_close(pi, SDA)
 ...
 """
 function bb_i2c_close(self::Pi, SDA)
@@ -2519,7 +2519,7 @@ The other bits in flags should be set to zero.
 ...
 # open SPI device on channel 1 in mode 3 at 50000 bits per second
 
-h = pi.spi_open(1, 50000, 3)
+h = spi_open(pi, 1, 50000, 3)
 ...
 """
 function spi_open(self::Pi, spi_channel, baud, spi_flags=0)
@@ -2540,7 +2540,7 @@ Closes the SPI device associated with handle.
 handle:= >=0 (as returned by a prior call to [*spi_open*]).
 
 ...
-pi.spi_close(h)
+spi_close(pi, h)
 ...
 """
 function spi_close(self, handle)
@@ -2559,7 +2559,7 @@ number of bytes read will be less than zero (and will contain
 the error code).
 
 ...
-(b, d) = pi.spi_read(h, 60) # read 60 bytes from device h
+(b, d) = spi_read(pi, h, 60) # read 60 bytes from device h
 if b == 60
 # process read data
 else
@@ -2586,13 +2586,13 @@ handle:= >=0 (as returned by a prior call to [*spi_open*]).
 data:= the bytes to write.
 
 ...
-pi.spi_write(0, b'\\x02\\xc0\\x80') # write 3 bytes to device 0
+spi_write(pi, 0, b'\\x02\\xc0\\x80') # write 3 bytes to device 0
 
-pi.spi_write(0, b'defgh')        # write 5 bytes to device 0
+spi_write(pi, 0, b'defgh')        # write 5 bytes to device 0
 
-pi.spi_write(0, "def")           # write 3 bytes to device 0
+spi_write(pi, 0, "def")           # write 3 bytes to device 0
 
-pi.spi_write(1, [2, 192, 128])   # write 3 bytes to device 1
+spi_write(pi, 1, [2, 192, 128])   # write 3 bytes to device 1
 ...
 """
 function spi_write(self::Pi, handle, data)
@@ -2618,13 +2618,13 @@ number of bytes read will be less than zero (and will contain
 the error code).
 
 ...
-(count, rx_data) = pi.spi_xfer(h, b'\\x01\\x80\\x00')
+(count, rx_data) = spi_xfer(pi, h, b'\\x01\\x80\\x00')
 
-(count, rx_data) = pi.spi_xfer(h, [1, 128, 0])
+(count, rx_data) = spi_xfer(pi, h, [1, 128, 0])
 
-(count, rx_data) = pi.spi_xfer(h, b"hello")
+(count, rx_data) = spi_xfer(pi, h, b"hello")
 
-(count, rx_data) = pi.spi_xfer(h, "hello")
+(count, rx_data) = spi_xfer(pi, h, "hello")
 ...
 """
 function spi_xfer(self::Pi, handle, data)
@@ -2664,9 +2664,9 @@ The baud rate must be one of 50, 75, 110, 134, 150,
 38400, 57600, 115200, or 230400.
 
 ...
-h1 = pi.serial_open("/dev/ttyAMA0", 300)
+h1 = serial_open(pi, "/dev/ttyAMA0", 300)
 
-h2 = pi.serial_open("/dev/ttyUSB1", 19200, 0)
+h2 = serial_open(pi, "/dev/ttyUSB1", 19200, 0)
 ...
 """
 function serial_open(self::Pi, tty, baud, ser_flags=0)
@@ -2685,7 +2685,7 @@ Closes the serial device associated with handle.
 handle:= >=0 (as returned by a prior call to [*serial_open*]).
 
 ...
-pi.serial_close(h1)
+serial_close(pi, h1)
 ...
 """
 function serial_close(self::Pi, handle)
@@ -2698,7 +2698,7 @@ Returns a single byte from the device associated with handle.
 handle:= >=0 (as returned by a prior call to [*serial_open*]).
 
 ...
-b = pi.serial_read_byte(h1)
+b = serial_read_byte(pi, h1)
 ...
 """
 function serial_read_byte(self::Pi, handle)
@@ -2712,9 +2712,9 @@ handle:= >=0 (as returned by a prior call to [*serial_open*]).
 byte_val:= 0-255, the value to write.
 
 ...
-pi.serial_write_byte(h1, 23)
+serial_write_byte(pi, h1, 23)
 
-pi.serial_write_byte(h1, ord('Z'))
+serial_write_byte(h1, ord(pi, 'Z'))
 ...
 """
 function serial_write_byte(self::Pi, handle, byte_val)
@@ -2734,7 +2734,7 @@ number of bytes read will be less than zero (and will contain
 the error code).
 
 ...
-(b, d) = pi.serial_read(h2, 100)
+(b, d) = serial_read(pi, h2, 100)
 if b > 0
 # process read data
 ...
@@ -2759,13 +2759,13 @@ handle:= >=0 (as returned by a prior call to [*serial_open*]).
 data:= the bytes to write.
 
 ...
-pi.serial_write(h1, b'\\x02\\x03\\x04')
+serial_write(pi, h1, b'\\x02\\x03\\x04')
 
-pi.serial_write(h2, b'help')
+serial_write(pi, h2, b'help')
 
-pi.serial_write(h2, "hello")
+serial_write(pi, h2, "hello")
 
-pi.serial_write(h1, [2, 3, 4])
+serial_write(pi, h1, [2, 3, 4])
 ...
 """
 function serial_write(self::Pi, handle, data)
@@ -2786,10 +2786,10 @@ device associated with handle.
 handle:= >=0 (as returned by a prior call to [*serial_open*]).
 
 ...
-rdy = pi.serial_data_available(h1)
+rdy = serial_data_available(pi, h1)
 
 if rdy > 0
-(b, d) = pi.serial_read(h1, rdy)
+(b, d) = serial_read(pi, h1, rdy)
 ...
 """
 function serial_data_available(self::Pi, handle)
@@ -2805,7 +2805,7 @@ pulse_len:= 1-100
 level:= 0-1
 
 ...
-pi.gpio_trigger(23, 10, 1)
+gpio_trigger(pi, 23, 10, 1)
 ...
 """
 function gpio_trigger(self::Pi, user_gpio, pulse_len=10, level=1)
@@ -2839,7 +2839,7 @@ Note, each (stable) edge will be timestamped [*steady*]
 microseconds after it was first detected.
 
 ...
-pi.set_glitch_filter(23, 100)
+set_glitch_filter(pi, 23, 100)
 ...
 """
 function set_glitch_filter(self, user_gpio, steady)
@@ -2865,7 +2865,7 @@ be reported.  Your software must be designed to cope with
 such reports.
 
 ...
-pi.set_noise_filter(23, 1000, 5000)
+set_noise_filter(pi, 23, 1000, 5000)
 ...
 """
 function set_noise_filter(self, user_gpio, steady, active)
@@ -2918,11 +2918,11 @@ script_id:= id of stored script.
 params:= up to 10 parameters required by the script.
 
 ...
-s = pi.run_script(sid, [par1, par2])
+s = run_script(pi, sid, [par1, par2])
 
-s = pi.run_script(sid)
+s = run_script(pi, sid)
 
-s = pi.run_script(sid, [1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
+s = run_script(pi, sid, [1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
 ...
 """
 function run_script(self::Pi, script_id, params=nothing)
@@ -2968,7 +2968,7 @@ the 10 parameters.  On error the run status will be negative
 and the parameter list will be empty.
 
 ...
-(s, pars) = pi.script_status(sid)
+(s, pars) = script_status(pi, sid)
 ...
 """
 function script_status(self::Pi, script_id)
@@ -2994,7 +2994,7 @@ Stops a running script.
 script_id:= id of stored script.
 
 ...
-status = pi.stop_script(sid)
+status = stop_script(pi, sid)
 ...
 """
 function stop_script(self::Pi, script_id)
@@ -3007,7 +3007,7 @@ Deletes a stored script.
 script_id:= id of stored script.
 
 ...
-status = pi.delete_script(sid)
+status = delete_script(pi, sid)
 ...
 """
 function delete_script(self::Pi, script_id)
@@ -3028,8 +3028,8 @@ It is the caller's responsibility to read data from the cyclic
 buffer in a timely fashion.
 
 ...
-status = pi.bb_serial_read_open(4, 19200)
-status = pi.bb_serial_read_open(17, 9600)
+status = bb_serial_read_open(pi, 4, 19200)
+status = bb_serial_read_open(pi, 17, 9600)
 ...
 """
 function bb_serial_read_open(self, user_gpio, baud, bb_bits=8)
@@ -3065,7 +3065,7 @@ For [*bb_bits*] 9-16 there will be two bytes per character.
 For [*bb_bits*] 17-32 there will be four bytes per character.
 
 ...
-(count, data) = pi.bb_serial_read(4)
+(count, data) = bb_serial_read(pi, 4)
 ...
 """
 function bb_serial_read(self, user_gpio)
@@ -3087,7 +3087,7 @@ Closes a GPIO for bit bang reading of serial data.
 user_gpio:= 0-31 (opened in a prior call to [*bb_serial_read_open*])
 
 ...
-status = pi.bb_serial_read_close(17)
+status = bb_serial_read_close(pi, 17)
 ...
 """
 function bb_serial_read_close(self, user_gpio)
@@ -3101,7 +3101,7 @@ user_gpio:= 0-31 (opened in a prior call to [*bb_serial_read_open*])
 invert:= 0-1 (1 invert, 0 normal)
 
 ...
-status = pi.bb_serial_invert(17, 1)
+status = bb_serial_invert(pi, 17, 1)
 ...
 """
 function bb_serial_invert(self, user_gpio, invert)
@@ -3119,17 +3119,17 @@ The returned value is an integer which by convention
 should be >=0 for OK and <0 for error.
 
 ...
-value = pi.custom_1()
+value = custom_1(pi, )
 
-value = pi.custom_1(23)
+value = custom_1(pi, 23)
 
-value = pi.custom_1(0, 55)
+value = custom_1(pi, 0, 55)
 
-value = pi.custom_1(23, 56, [1, 5, 7])
+value = custom_1(pi, 23, 56, [1, 5, 7])
 
-value = pi.custom_1(23, 56, b"hello")
+value = custom_1(pi, 23, 56, b"hello")
 
-value = pi.custom_1(23, 56, "hello")
+value = custom_1(pi, 23, 56, "hello")
 ...
 """
 function custom_1(self, arg1=0, arg2=0, argx=[])
@@ -3156,15 +3156,15 @@ there was an error the number of bytes read will be
 less than zero (and will contain the error code).
 
 ...
-(count, data) = pi.custom_2()
+(count, data) = custom_2(pi, )
 
-(count, data) = pi.custom_2(23)
+(count, data) = custom_2(pi, 23)
 
-(count, data) = pi.custom_2(23, [1, 5, 7])
+(count, data) = custom_2(pi, 23, [1, 5, 7])
 
-(count, data) = pi.custom_2(23, b"hello")
+(count, data) = custom_2(pi, 23, b"hello")
 
-(count, data) = pi.custom_2(23, "hello", 128)
+(count, data) = custom_2(pi, 23, "hello", 128)
 ...
 """
 function custom_2(self, arg1=0, argx=[], retMax=8192)
@@ -3213,11 +3213,11 @@ end
 function cbf(gpio, level, tick)
 print(gpio, level, tick)
 
-cb1 = pi.callback(22, pigpio.EITHER_EDGE, cbf)
+cb1 = callback(pi, 22, pigpio.EITHER_EDGE, cbf)
 
-cb2 = pi.callback(4, pigpio.EITHER_EDGE)
+cb2 = callback(pi, 4, pigpio.EITHER_EDGE)
 
-cb3 = pi.callback(17)
+cb3 = callback(pi, 17)
 
 print(cb3.tally())
 
@@ -3250,12 +3250,12 @@ The function returns true if the edge is detected,
 otherwise false.
 
 ...
-if pi.wait_for_edge(23)
+if wait_for_edge(pi, 23)
 print("Rising edge detected")
 else
 print("wait for edge timed out")
 
-if pi.wait_for_edge(23, pigpio.FALLING_EDGE, 5.0)
+if wait_for_edge(pi, 23, pigpio.FALLING_EDGE, 5.0)
 print("Falling edge detected")
 else
 print("wait for falling edge timed out")
@@ -3307,11 +3307,6 @@ function Pi(; host = get(ENV, "PIGPIO_ADDR", ""), port = get(ENV, "PIGPIO_PORT",
     # Disable the Nagle algorithm.
     #self.sl.s.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
 
-    sock = connect(host, port)
-    sl = SockLock(sock, ReentrantLock())
-    notify = CallbackThread(sl, host, port)
-    self = Pi(host, port, true, sl, notify)
-
     try
         sock = connect(host, port)
         sl = SockLock(sock, ReentrantLock())
@@ -3320,8 +3315,6 @@ function Pi(; host = get(ENV, "PIGPIO_ADDR", ""), port = get(ENV, "PIGPIO_PORT",
         #atexit.register(self.stop) #TODO
 
     catch error
-        #self = Pi(host, port, false, SockLock(nothing, ReentrantLock()), nothing)
-
         s = "Can't connect to pigpio at $host:$port)"
 
         println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%")
@@ -3334,19 +3327,20 @@ function Pi(; host = get(ENV, "PIGPIO_ADDR", ""), port = get(ENV, "PIGPIO_PORT",
         println("E.g. export PIGPIO_ADDR=soft, export PIGPIO_PORT=8888")
         println("")
         println("Did you specify the correct Pi host/port in the")
-        println("pigpio.pi() function? E.g. Pi('soft', 8888))")
+        println("Pi() function? E.g. Pi('soft', 8888))")
         println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%")
         throw(error)
     end
+    return Pi
 end
 
-function stop(self::Pi)
-    """Release pigpio resources.
 
-    ...
-    pi.stop()
-    ...
-    """
+"""Release pigpio resources.
+...
+stop(pi)
+...
+"""
+function stop(self::Pi)
 
     self.connected = false
 
