@@ -103,14 +103,14 @@ function _u2i(x::UInt32)
 end
 
 
-@struct type InMsg
+struct InMsg
     cmd::Cuint # a bits type
     p1::Cuint # an array of bits types
     p2::Cuint # a string with a fixed number of bytes
     d::Cuint
 end
 
-@struct type OutMsg
+struct OutMsg
     dummy::Array{UInt8,1} # a bits type
     res::Cuint # an array of bits types
 end
@@ -125,15 +125,16 @@ p1:= command parameter 1 (if applicable).
 """
 function _pigpio_command(sl::SockLock, cmd::Integer, p1::Integer, p2::Integer, rl=true)
     lock(sl.l)
-    pack(sl.s, InMsg(cmd, p1, p2, 0))
+    Base.write(sl.s, Array(reinterpret(UInt8, [cmd, p1, p2, 0])))
     #sl.s.send(struct.pack('IIII', cmd, p1, p2, 0))
     out = IOBuffer(Base.read(sl.s, 16))
-    msg = unpack(out, OutMsg )
+    msg = reinterpret(UInt8, take!(out))
+    res = reinterpret(Cuint, msg[(length(msg) - 3):length(msg)])[1]
     #dummy, res = struct.unpack('12sI', sl.s.recv(16))
     if rl
         unlock(sl.l)
     end
-   return msg.res
+   return res
 end
 
 """
@@ -148,17 +149,18 @@ extents:= additional data blocks
 """
 function _pigpio_command_ext(sl, cmd, p1, p2, p3, extents, rl=true)
     ext = IOBuffer()
-    pack(ext, InMsg(cmd, p1, p2, p3))
+    Base.write(ext, Array(reinterpret(UInt8, [cmd, p1, p2, p3])))
     for x in extents
        write(ext, string(x))
     end
     lock(sl.l)
     write(sl.s, ext)
-    msg = unpack(sl.s, OutMsg )
+    msg = reinterpret(UInt8, sl.s)
+    res = reinterpret(Cuint, msg[(length(msg) - 3):length(msg)])[1]
     if rl
          unlock(sl.l)
     end
-    return msg.res
+    return res
 end
 
 """An ADT class to hold callback information
@@ -202,7 +204,7 @@ end
 function stop(self::CallbackThread)
     if self.go
         self.go = false
-        write(self.sl.s, pack(InMsg(_PI_CMD_NC, self.handle, 0, 0)))
+        write(self.sl.s, Array(reinterpret(UInt8,InMsg(_PI_CMD_NC, self.handle, 0, 0))))
     end
 end
 
@@ -231,7 +233,7 @@ function remove(self::CallbackThread, callb)
 end
 
 
-@struct type CallbMSg
+struct CallbMsg
     seq::Cushort
     flags::Cushort
     tick::Cuint
@@ -242,18 +244,13 @@ end
 """Runs the notification thread."""
 function run(self::CallbackThread)
     lastLevel = _pigpio_command(self.control,  _PI_CMD_BR1, 0, 0)
-
     MSG_SIZ = 12
-
     while self.go
-
         buf = readbytes(self.sl.s, MSG_SIZ, all=true)
-
         if self.go
-            msg = unpack(buf, CallbMsg)
+            msg = reinterpret(CallbMsg, buf)
             seq = msg.seq
             seq, flags, tick, level = (msg.seq, msg.flags, msg.tick, msg.level)
-
             if flags == 0
                 changed = level ^ lastLevel
                 lastLevel = level
@@ -263,11 +260,9 @@ function run(self::CallbackThread)
                     elseif cb.bit & level
                         newLevel = 1
                     end
-
                     if (cb.edge ^ newLevel)
                         cb.func(cb.gpio, newLevel, tick)
                     end
-
                 end
             else
                 if flags & NTFY_FLAGS_WDOG
@@ -3307,13 +3302,13 @@ function Pi(; host = get(ENV, "PIGPIO_ADDR", ""), port = get(ENV, "PIGPIO_PORT",
     # Disable the Nagle algorithm.
     #self.sl.s.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
 
-    try
+ #   try
         sock = connect(host, port)
         sl = SockLock(sock, ReentrantLock())
         notify = CallbackThread(sl, host, port)
         self = Pi(host, port, true, sl, notify)
         #atexit.register(self.stop) #TODO
-
+#=
     catch error
         s = "Can't connect to pigpio at $host:$port)"
 
@@ -3330,7 +3325,7 @@ function Pi(; host = get(ENV, "PIGPIO_ADDR", ""), port = get(ENV, "PIGPIO_PORT",
         println("Pi() function? E.g. Pi('soft', 8888))")
         println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%")
         throw(error)
-    end
+    end =#
     return self
 end
 

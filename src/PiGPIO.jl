@@ -267,7 +267,7 @@ module PiGPIO
 
 export Pi
 
-using StrPack
+using Sockets
 
 include("constants.jl")
 include("pi.jl")
