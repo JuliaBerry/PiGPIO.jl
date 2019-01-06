@@ -6,7 +6,6 @@ export Pi
 using Sockets
 
 include("pi.jl")
-include("basic.jl")
 include("wave.jl")
 include("i2c.jl")
 include("spiSerial.jl")
