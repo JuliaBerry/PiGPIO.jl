@@ -440,5 +440,4 @@ _errors=[
    [_PI_BAD_ISR_INIT     , "bad ISR initialisation"],
    [PI_BAD_FOREVER       , "loop forever must be last chain command"],
    [PI_BAD_FILTER        , "bad filter parameter"],
-
 ]

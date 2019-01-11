@@ -5,6 +5,7 @@ export Pi
 
 using Sockets
 
+include("constants.jl")
 include("pi.jl")
 include("wave.jl")
 include("i2c.jl")

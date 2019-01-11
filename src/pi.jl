@@ -1,3 +1,7 @@
+export set_mode, get_mode, set_pull_up_down
+
+
+
 exceptions = true
 """
 A class to store socket and lock.
@@ -97,16 +101,13 @@ p1:= command parameter 1 (if applicable).
 """
 function _pigpio_command(sl::SockLock, cmd::Integer, p1::Integer, p2::Integer, rl=true)
     lock(sl.l)
-    Base.write(sl.s, Array(reinterpret(UInt8, [cmd, p1, p2, 0])))
-    #sl.s.send(struct.pack('IIII', cmd, p1, p2, 0))
+    Base.write(sl.s, UInt32.([cmd, p1, p2, 0]))
     out = IOBuffer(Base.read(sl.s, 16))
-    msg = reinterpret(UInt8, take!(out))
-    res = reinterpret(Cuint, msg[(length(msg) - 3):length(msg)])[1]
-    #dummy, res = struct.unpack('12sI', sl.s.recv(16))
+    msg = reinterpret(Cuint, take!(out))[4]
     if rl
         unlock(sl.l)
     end
-   return res
+   return msg
 end
 
 """
@@ -127,8 +128,7 @@ function _pigpio_command_ext(sl, cmd, p1, p2, p3, extents, rl=true)
     end
     lock(sl.l)
     write(sl.s, ext)
-    msg = reinterpret(UInt8, sl.s)
-    res = reinterpret(Cuint, msg[(length(msg) - 3):length(msg)])[1]
+    msg = reinterpret(Cuint, sl.s)[4]
     if rl
          unlock(sl.l)
     end
@@ -176,7 +176,7 @@ end
 function stop(self::CallbackThread)
     if self.go
         self.go = false
-        write(self.sl.s, Array(reinterpret(UInt8,InMsg(_PI_CMD_NC, self.handle, 0, 0))))
+        Base.write(self.sl.s, _PI_CMD_NC, self.handle, 0, 0)
     end
 end
 
@@ -1300,37 +1300,27 @@ function Pi(; host = get(ENV, "PIGPIO_ADDR", ""), port = get(ENV, "PIGPIO_PORT",
         host = "localhost"
     end
 
-    #self.sl.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    #self.sl.s.settimeout(None)
-
-    # Disable the Nagle algorithm.
-    #self.sl.s.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
-
     try
         sock = connect(host, port)
+        ccall(:uv_tcp_nodelay, Cint, (Ptr{Cvoid}, Cuint), sock, 1) # Disable Nagle's Algorithm
         sl = SockLock(sock, ReentrantLock())
         notify = CallbackThread(sl, host, port)
         self = Pi(host, port, true, sl, notify)
+        @info "Successfully connected!"
+        return self
         #atexit.register(self.stop) #TODO
-
     catch error
-        s = "Can't connect to pigpio at $host:$port)"
-
         println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%")
-        println(s)
-        println("")
-        println("Did you start the pigpio daemon? E.g. sudo pigpiod")
-        println("")
+        println("Can't connect to pigpio at $host:$port")
+        println("Did you start the pigpio daemon? E.g. sudo pigpiod\n")
         println("Did you specify the correct Pi host/port in the environment")
         println("variables PIGPIO_ADDR/PIGPIO_PORT?")
-        println("E.g. export PIGPIO_ADDR=soft, export PIGPIO_PORT=8888")
-        println("")
+        println("E.g. export PIGPIO_ADDR=soft, export PIGPIO_PORT=8888\n")
         println("Did you specify the correct Pi host/port in the")
         println("Pi() function? E.g. Pi('soft', 8888))")
         println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%")
         throw(error)
     end
-    return self
 end
 
 
@@ -1340,16 +1330,7 @@ stop(pi)
 ...
 """
 function stop(self::Pi)
-
     self.connected = false
-
-    if self.notify != nothing
-        stop(self.notify)
-        self.notify = nothing
-    end
-
-    if self.sl.s != nothing
-        close(self.sl.s)
-        self.sl.s = nothing
-    end
+    stop(self.notify)
+    close(self.sl.s)
 end
