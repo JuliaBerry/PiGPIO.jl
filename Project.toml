@@ -2,5 +2,8 @@ name = "PiGPIO"
 uuid = "bb151fc1-c6dc-5496-8ed6-07f94907e623"
 version = "0.1.0"
 
+[compat]
+julia = "1"
+
 [deps]
 Sockets = "6462fe0b-24de-5631-8697-dd941f90decc"
