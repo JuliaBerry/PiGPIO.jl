@@ -1285,7 +1285,7 @@ success of the connection.  If the connection is established
 successfully [*connected*] will be true, otherwise false.
 
 ...
-pi = pigio.pi()              # use defaults
+pi = pigpio.pi()              # use defaults
 pi = pigpio.pi('mypi')       # specify host, default port
 pi = pigpio.pi('mypi', 7777) # specify host and port
 
