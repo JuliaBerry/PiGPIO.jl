@@ -2,7 +2,12 @@
 
 Documentation for PiGPIO.jl
 
-### Control GPIO pins on the Raspberry Pi from Julia
+#### Control GPIO pins on the Raspberry Pi from Julia
+
+[![][docs-stable-img]][docs-stable-url]
+
+[docs-stable-img]: https://img.shields.io/badge/docs-stable-blue.svg
+[docs-stable-url]: https://pkg.julialang.org/docs/PiGPIO/
 
 [![PiGPIO](https://img.youtube.com/vi/UmSQjkaATk8/0.jpg)](https://www.youtube.com/watch?v=UmSQjkaATk8)
 
@@ -13,7 +18,7 @@ input outputs (GPIO).
 This package is an effective translation of the python package for the same.
 Which can be found [here](http://abyz.me.uk/rpi/pigpio/python.html)
 
-## Features
+### Features
 
 * OS independent. Only Julia 1.0+ required.
 * Controls one or more Pi's.
@@ -30,6 +35,8 @@ work is done by the daemon. One benefit of working this way is that you can
 remotely access the pi over a network and multiple instances can be connected
 to the daemon simultaneously.
 
+## Launching the Daemon
+
 Launching the daemon requires sudo privileges. Launch by typing `sudo pigpiod`
 in the terminal.
 
@@ -37,7 +44,7 @@ in the terminal.
 
 ```julia
 using Pkg
-Pkg.add("https://github.com/JuliaBerry/PiGPIO.jl")
+Pkg.add("PiGPIO")
 
 using PiGPIO
 
@@ -51,10 +58,11 @@ set_mode(p::Pi, pin::Int, mode)
 get_mode(p::Pi, pin::Int)
 # mode can be INPUT or OUTPUT
 
-read(p, pin)
-write(p, pin, state)
+PiGPIO.read(p, pin)
+PiGPIO.write(p, pin, state)
 #state can be HIGH, LOW, ON, OFF
 
-set_PWM_dutycycle(p, pin, dutycyle)
+PiGPIO.set_PWM_dutycycle(p, pin, dutycyle)
 #dutycyle defaults to a range 0-255
 ```
+
