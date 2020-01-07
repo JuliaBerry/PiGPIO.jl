@@ -1,4 +1,4 @@
-# PiGPIO
+# PiGPIO.jl
 
 #### Control GPIO pins on the Raspberry Pi from Julia
 
@@ -49,7 +49,7 @@ using PiGPIO
 pi=Pi() #connect to pigpiod daemon on localhost
 ```
 
-## Reference
+## Example Usage
 
 ```julia
 set_mode(p::Pi, pin::Int, mode)
