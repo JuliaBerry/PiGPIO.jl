@@ -33,6 +33,8 @@ work is done by the daemon. One benefit of working this way is that you can
 remotely access the pi over a network and multiple instances can be connected
 to the daemon simultaneously.
 
+## Launching the Daemon
+
 Launching the daemon requires sudo privileges. Launch by typing `sudo pigpiod`
 in the terminal.
 
