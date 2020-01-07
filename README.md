@@ -42,7 +42,7 @@ in the terminal.
 
 ```julia
 using Pkg
-Pkg.add("https://github.com/JuliaBerry/PiGPIO.jl")
+Pkg.add("PiGPIO")
 
 using PiGPIO
 
