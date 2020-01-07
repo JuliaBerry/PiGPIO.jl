@@ -54,10 +54,10 @@ set_mode(p::Pi, pin::Int, mode)
 get_mode(p::Pi, pin::Int)
 # mode can be INPUT or OUTPUT
 
-read(p, pin)
-write(p, pin, state)
+PiGPIO.read(p, pin)
+PiGPIO.write(p, pin, state)
 #state can be HIGH, LOW, ON, OFF
 
-set_PWM_dutycycle(p, pin, dutycyle)
+PiGPIO.set_PWM_dutycycle(p, pin, dutycyle)
 #dutycyle defaults to a range 0-255
 ```
