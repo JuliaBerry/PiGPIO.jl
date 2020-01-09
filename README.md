@@ -1,4 +1,4 @@
-# PiGPIO
+# PiGPIO.jl
 
 #### Control GPIO pins on the Raspberry Pi from Julia
 
@@ -33,6 +33,8 @@ work is done by the daemon. One benefit of working this way is that you can
 remotely access the pi over a network and multiple instances can be connected
 to the daemon simultaneously.
 
+## Launching the Daemon
+
 Launching the daemon requires sudo privileges. Launch by typing `sudo pigpiod`
 in the terminal.
 
@@ -40,24 +42,24 @@ in the terminal.
 
 ```julia
 using Pkg
-Pkg.add("https://github.com/JuliaBerry/PiGPIO.jl")
+Pkg.add("PiGPIO")
 
 using PiGPIO
 
 pi=Pi() #connect to pigpiod daemon on localhost
 ```
 
-## Reference
+## Example Usage
 
 ```julia
 set_mode(p::Pi, pin::Int, mode)
 get_mode(p::Pi, pin::Int)
 # mode can be INPUT or OUTPUT
 
-read(p, pin)
-write(p, pin, state)
+PiGPIO.read(p, pin)
+PiGPIO.write(p, pin, state)
 #state can be HIGH, LOW, ON, OFF
 
-set_PWM_dutycycle(p, pin, dutycyle)
+PiGPIO.set_PWM_dutycycle(p, pin, dutycyle)
 #dutycyle defaults to a range 0-255
 ```
