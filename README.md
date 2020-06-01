@@ -16,6 +16,8 @@ input outputs (GPIO).
 This package is an effective translation of the python package for the same.
 Which can be found [here](http://abyz.me.uk/rpi/pigpio/python.html)
 
+Click [here](https://medium.com/@imkimfung/using-julia-to-control-leds-on-a-raspberry-pi-b320be83e503) for an **in-depth tutorial** on how you can control GPIO pins such as LEDs from Julia on the Raspberry Pi.
+
 ### Features
 
 * OS independent. Only Julia 1.0+ required.
