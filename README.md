@@ -5,7 +5,7 @@
 [![][docs-stable-img]][docs-stable-url]
 
 [docs-stable-img]: https://img.shields.io/badge/docs-stable-blue.svg
-[docs-stable-url]: https://pkg.julialang.org/docs/PiGPIO/
+[docs-stable-url]: https://juliahub.com/docs/PiGPIO/
 
 [![PiGPIO](https://img.youtube.com/vi/UmSQjkaATk8/0.jpg)](https://www.youtube.com/watch?v=UmSQjkaATk8)
 
