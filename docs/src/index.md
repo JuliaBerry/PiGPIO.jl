@@ -2,12 +2,7 @@
 
 Documentation for PiGPIO.jl
 
-#### Control GPIO pins on the Raspberry Pi from Julia
-
-[![][docs-stable-img]][docs-stable-url]
-
-[docs-stable-img]: https://img.shields.io/badge/docs-stable-blue.svg
-[docs-stable-url]: https://pkg.julialang.org/docs/PiGPIO/
+## Control GPIO pins on the Raspberry Pi from Julia
 
 [![PiGPIO](https://img.youtube.com/vi/UmSQjkaATk8/0.jpg)](https://www.youtube.com/watch?v=UmSQjkaATk8)
 
@@ -15,10 +10,10 @@ PiGPIO.jl is a Julia package for the Raspberry which communicates with the pigpi
 daemon to allow control of the general purpose
 input outputs (GPIO).
 
-This package is an effective translation of the python package for the same.
+This package is effectively a translation of the python package of the same.
 Which can be found [here](http://abyz.me.uk/rpi/pigpio/python.html)
 
-### Features
+## Features
 
 * OS independent. Only Julia 1.0+ required.
 * Controls one or more Pi's.
