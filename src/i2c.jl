@@ -632,8 +632,8 @@ SDA:= 0-31
 SCL:= 0-31
 baud:= 50-500000
 
-Returns 0 if OK, otherwise PI_BAD_USER_GPIO, PI_BAD_I2C_BAUD, or
-PI_GPIO_IN_USE.
+Returns 0 if OK, otherwise `PiGPIO.PI_BAD_USER_GPIO`, `PiGPIO.PI_BAD_I2C_BAUD`,
+or `PiGPIO.PI_GPIO_IN_USE`.
 
 NOTE
 
@@ -662,7 +662,8 @@ previously opened with `bb_i2c_open`.
 
 SDA:= 0-31, the SDA GPIO used in a prior call to `bb_i2c_open`
 
-Returns 0 if OK, otherwise PI_BAD_USER_GPIO, or PI_NOT_I2C_GPIO.
+Returns 0 if OK, otherwise `PiGPIO.PI_BAD_USER_GPIO`, or
+`PiGPIO.PI_NOT_I2C_GPIO`.
 
 ```julia
 bb_i2c_close(pi, SDA)
@@ -693,6 +694,7 @@ the error code).
 
 The following command codes are supported
 
+```
 Name    @ Cmd & Data   @ Meaning
 End     @ 0            @ No more commands
 Escape  @ 1            @ Next P is two bytes
@@ -702,6 +704,7 @@ Address @ 4 P          @ Set I2C address to P
 Flags   @ 5 lsb msb    @ Set I2C flags to lsb + (msb << 8)
 Read    @ 6 P          @ Read P bytes of data
 Write   @ 7 P ...      @ Write P bytes of data
+```
 
 The address, read, and write commands take a parameter P.
 Normally P is one byte (0-255).  If the command is preceded by

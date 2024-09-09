@@ -96,10 +96,10 @@ end
 """
 Runs a pigpio socket command.
 
-sl:= command socket and lock.
-cmd:= the command to be executed.
-p1:= command parameter 1 (if applicable).
- p2:=  command parameter 2 (if applicable).
+* `sl`: command socket and lock.
+* `cmd`: the command to be executed.
+* `p1`: command parameter 1 (if applicable).
+* `p2`: command parameter 2 (if applicable).
 """
 function _pigpio_command(sl::SockLock, cmd::Integer, p1::Integer, p2::Integer, rl=true)
     lock(sl.l)
@@ -634,7 +634,7 @@ end
 """
 Returns the frequency of PWM being used on the GPIO.
 
-user_gpio:= 0-31.
+`user_gpio`= 0-31.
 
 Returns the frequency (in Hz) used for the GPIO.
 
@@ -664,8 +664,8 @@ end
 """
 Starts (500-2500) or stops (0) servo pulses on the GPIO.
 
-user_gpio:= 0-31.
-pulsewidth:= 0 (off),
+`user_gpio`:= 0-31.
+`pulsewidth`:= 0 (off),
            500 (most anti-clockwise) - 2500 (most clockwise).
 
 The selected pulsewidth will continue to be transmitted until
@@ -693,7 +693,7 @@ end
 """
 Returns the servo pulsewidth being used on the GPIO.
 
-user_gpio:= 0-31.
+`user_gpio`:= 0-31.
 
 Returns the servo pulsewidth.
 
@@ -831,8 +831,8 @@ end
 """
 Sets a watchdog timeout for a GPIO.
 
- user_gpio:= 0-31.
-wdog_timeout:= 0-60000.
+* `user_gpio`: 0-31.
+* `wdog_timeout`: 0-60000.
 
 The watchdog is nominally in milliseconds.
 
@@ -1224,9 +1224,9 @@ end
 Calls a user supplied function (a callback) whenever the
 specified GPIO edge is detected.
 
-user_gpio:= 0-31.
-edge:= `PiGPIO.EITHER_EDGE`, `PiGPIO.RISING_EDGE` (default), or `PiGPIO.FALLING_EDGE`.
-func:= user supplied callback function.
+* `user_gpio`: 0-31.
+* `edge`: `PiGPIO.EITHER_EDGE`, `PiGPIO.RISING_EDGE` (default), or `PiGPIO.FALLING_EDGE`.
+* `func`: user supplied callback function.
 
 The user supplied callback receives three parameters, the GPIO,
 the level, and the tick.
@@ -1266,10 +1266,10 @@ end
 """
 Wait for an edge event on a GPIO.
 
-user_gpio:= 0-31.
-  edge:= EITHER_EDGE, RISING_EDGE (default), or
-         FALLING_EDGE.
-wait_timeout:= >=0.0 (default 60.0).
+* `user_gpio`: 0-31.
+* `edge`: `PiGPIO.EITHER_EDGE`, `PiGPIO.RISING_EDGE` (default), or
+         `PiGPIO.FALLING_EDGE`.
+* `wait_timeout`: >=0.0 (default 60.0).
 
 The function returns when the edge is detected or after
 the number of seconds specified by timeout has expired.
