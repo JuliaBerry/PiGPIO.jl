@@ -242,8 +242,9 @@ end
 Transmits the waveform with id wave_id.  The waveform is sent
 once.
 
-NOTE: Any hardware PWM started by `hardware_PWM` will
-be cancelled.
+!!! note
+
+    Any hardware PWM started by `hardware_PWM` will be cancelled.
 
  * `wave_id`: >=0 (as returned by a prior call to `wave_create`).
 
@@ -258,12 +259,14 @@ function wave_send_once(self::Pi, wave_id)
 end
 
 """
-Transmits the waveform with id wave_id.  The waveform repeats
-until wave_tx_stop is called or another call to `wave_send_*`
+    PiGPIO.wave_send_repeat(self::Pi, wave_id)
+
+Transmits the waveform with id `wave_id`.  The waveform repeats
+until `wave_tx_stop` is called or another call to `wave_send_*`
 is made.
 
-NOTE: Any hardware PWM started by `hardware_PWM` will
-be cancelled.
+!!! note
+    Any hardware PWM started by `hardware_PWM` will be cancelled.
 
  * `wave_id`: >=0 (as returned by a prior call to `wave_create`).
 
@@ -294,11 +297,13 @@ to sync with the previous waveform.
 `PiGPIO.WAVE_MODE_REPEAT_SYNC` same as `wave_send_repeat` but tries
 to sync with the previous waveform.
 
-WARNING: bad things may happen if you delete the previous
-waveform before it has been synced to the new waveform.
+!!! warning
 
-NOTE: Any hardware PWM started by `hardware_PWM` will
-be cancelled.
+    Bad things may happen if you delete the previous waveform before it has been synced to the new waveform.
+
+!!! note
+
+    Any hardware PWM started by `hardware_PWM` will be cancelled.
 
  * `wave_id`: >=0 (as returned by a prior call to `wave_create`).
 
@@ -368,8 +373,8 @@ end
 """
 This function transmits a chain of waveforms.
 
-NOTE: Any hardware PWM started by `hardware_PWM`
-will be cancelled.
+!!! note
+    Any hardware PWM started by `hardware_PWM` will be cancelled.
 
 The waves to be transmitted are specified by the contents
 of data which contains an ordered list of `wave_id`s

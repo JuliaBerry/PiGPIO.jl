@@ -27,8 +27,9 @@ b  b  b  b  b  b  R  T  n  n  n  n  W  A u2 u1 u0 p2 p1 p0  m  m
 
 mm defines the SPI mode.
 
-WARNING: modes 1 and 3 do not appear to work on
-the auxiliary device.
+!!! warning
+
+    modes 1 and 3 do not appear to work on the auxiliary device.
 
 . .
 Mode POL PHA

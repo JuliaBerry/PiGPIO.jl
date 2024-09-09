@@ -635,10 +635,10 @@ o I2C on any pair of spare GPIO
 Returns 0 if OK, otherwise `PiGPIO.PI_BAD_USER_GPIO`, `PiGPIO.PI_BAD_I2C_BAUD`,
 or `PiGPIO.PI_GPIO_IN_USE`.
 
-NOTE
+!!! note
 
-The GPIO used for SDA and SCL must have pull-ups to 3V3 connected.
-As a guide the hardware pull-ups on pins 3 and 5 are 1k8 in value.
+    The GPIO used for SDA and SCL must have pull-ups to 3V3 connected.
+    As a guide the hardware pull-ups on pins 3 and 5 are 1k8 in value.
 
 ```julia
 h = bb_i2c_open(pi, 4, 5, 50000) # bit bang on GPIO 4/5 at 50kbps

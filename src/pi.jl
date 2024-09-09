@@ -1010,8 +1010,9 @@ end
 Starts hardware PWM on a GPIO at the specified frequency
 and dutycycle. Frequencies above 30MHz are unlikely to work.
 
-NOTE: Any waveform started by `wave_send_once`,
-`wave_send_repeat`, or `wave_chain` will be cancelled.
+!!! note
+    Any waveform started by `wave_send_once`, `wave_send_repeat`, or
+    `wave_chain` will be cancelled.
 
 This function is only valid if the pigpio main clock is PCM.
 The main clock defaults to PCM but may be overridden when the
