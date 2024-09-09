@@ -11,8 +11,8 @@ makedocs(
     format = Documenter.HTML(),
     modules = [PiGPIO],
     # examples need to be run on a Raspberry Pi
-    # doctest = false,
-    # draft = true,
+    doctest = false,
+    draft = true,
     pages = [
         "index.md",
         "Tutorial" => "tutorial.md",

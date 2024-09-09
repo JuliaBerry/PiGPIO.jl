@@ -115,12 +115,12 @@ end
 """
 Runs an extended pigpio socket command.
 
-    sl:= command socket and lock.
-   cmd:= the command to be executed.
-    p1:= command parameter 1 (if applicable).
-    p2:= command parameter 2 (if applicable).
-    p3:= total size in bytes of following extents
-extents:= additional data blocks
+ * `sl`: command socket and lock.
+ * `cmd`: the command to be executed.
+ * `p1`: command parameter 1 (if applicable).
+ * `p2`: command parameter 2 (if applicable).
+ * `p3`: total size in bytes of following extents
+ * `extents`: additional data blocks
 """
 function _pigpio_command_ext(sl, cmd, p1, p2, p3, extents, rl=true)
     ext = IOBuffer()
@@ -139,9 +139,9 @@ end
 
 """An ADT class to hold callback information
 
-   gpio:= Broadcom GPIO number.
-   edge:= `PiGPIO.EITHER_EDGE`, `PiGPIO.RISING_EDGE`, or `PiGPIO.FALLING_EDGE`.
-   func:= a user function taking three arguments (GPIO, level, tick).
+ * `gpio`: Broadcom GPIO number.
+ * `edge`: `PiGPIO.EITHER_EDGE`, `PiGPIO.RISING_EDGE`, or `PiGPIO.FALLING_EDGE`.
+ * `func`: a user function taking three arguments (GPIO, level, tick).
 """
 mutable struct Callback_ADT
     gpio::Int
@@ -465,8 +465,8 @@ end
 
 Starts (non-zero dutycycle) or stops (0) PWM pulses on the GPIO.
 
-user_gpio:= 0-31.
-dutycycle:= 0-range (range defaults to 255).
+ * `user_gpio`: 0-31.
+ * `dutycycle`: 0-range (range defaults to 255).
 
 The `set_PWM_range` function can change the default range of 255.
 
@@ -487,7 +487,7 @@ end
     PiGPIO.get_PWM_dutycycle(self::Pi, user_gpio)
 
 Returns the PWM dutycycle being used on the GPIO.
-user_gpio:= 0-31.
+ * `user_gpio`: 0-31.
 
 For normal PWM the dutycycle will be out of the defined range
 for the GPIO (see `get_PWM_range`).
@@ -553,7 +553,7 @@ end
 Returns the real (underlying) range of PWM values being
 used on the GPIO.
 
-user_gpio:= 0-31.
+ * `user_gpio`: 0-31.
 
 If a hardware clock is active on the GPIO the reported
 real range will be 1000000 (1M).
@@ -574,8 +574,8 @@ end
 """
 Sets the frequency (in Hz) of the PWM to be used on the GPIO.
 
-user_gpio:= 0-31.
-frequency:= >=0 Hz
+ * `user_gpio`: 0-31.
+ * `frequency`: >=0 Hz
 
 Returns the numerically closest frequency if OK, otherwise
 PI_BAD_USER_GPIO or PI_NOT_PERMITTED.
@@ -664,9 +664,8 @@ end
 """
 Starts (500-2500) or stops (0) servo pulses on the GPIO.
 
-`user_gpio`:= 0-31.
-`pulsewidth`:= 0 (off),
-           500 (most anti-clockwise) - 2500 (most clockwise).
+* `user_gpio`: 0-31.
+* `pulsewidth`: 0 (off), 500 (most anti-clockwise) - 2500 (most clockwise).
 
 The selected pulsewidth will continue to be transmitted until
 changed by a subsequent call to set_servo_pulsewidth.
@@ -693,7 +692,7 @@ end
 """
 Returns the servo pulsewidth being used on the GPIO.
 
-`user_gpio`:= 0-31.
+* `user_gpio`: 0-31.
 
 Returns the servo pulsewidth.
 
@@ -768,8 +767,8 @@ end
 """
 Starts notifications on a handle.
 
-handle:= >=0 (as returned by a prior call to `notify_open`)
-bits:= a 32 bit mask indicating the GPIO to be notified.
+ * `handle`: >=0 (as returned by a prior call to `notify_open`)
+ * `bits`: a 32 bit mask indicating the GPIO to be notified.
 
 The notification sends state changes for each GPIO whose
 corresponding bit in bits is set.
@@ -790,7 +789,7 @@ end
 """
 Pauses notifications on a handle.
 
-handle:= >=0 (as returned by a prior call to `notify_open`)
+ * `handle`: >=0 (as returned by a prior call to `notify_open`)
 
 Notifications for the handle are suspended until
 `notify_begin` is called again.
@@ -813,7 +812,7 @@ end
 """
 Stops notifications on a handle and releases the handle for reuse.
 
-handle:= >=0 (as returned by a prior call to `notify_open`)
+ * `handle`: >=0 (as returned by a prior call to `notify_open`)
 
 ```julia
 h = notify_open(pi)
@@ -947,7 +946,7 @@ end
 """
 Sets GPIO 32-53 if the corresponding bit (0-21) in bits is set.
 
-bits:= a 32 bit mask with 1 set if the corresponding GPIO is
+ * `bits`: a 32 bit mask with 1 set if the corresponding GPIO is
  to be set.
 
 A returned status of `PiGPIO.PI_SOME_PERMITTED` indicates that the user

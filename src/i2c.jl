@@ -1,9 +1,9 @@
 """
 Returns a handle (>=0) for the device at the I2C bus address.
 
-i2c_bus:= >=0.
-i2c_address:= 0-0x7F.
-i2c_flags:= 0, no flags are currently defined.
+ * `i2c_bus`: >=0.
+ * `i2c_address`: 0-0x7F.
+ * `i2c_flags`: 0, no flags are currently defined.
 
 Normally you would only use the `i2c_*` functions if
 you are or will be connecting to the Pi over a network.  If
@@ -49,7 +49,7 @@ end
 """
 Closes the I2C device associated with handle.
 
-handle:= >=0 (as returned by a prior call to `i2c_open`).
+ * `handle`: >=0 (as returned by a prior call to `i2c_open`).
 
 ```julia
 i2c_close(pi, h)
@@ -62,8 +62,8 @@ end
 """
 Sends a single bit to the device associated with handle.
 
-handle:= >=0 (as returned by a prior call to `i2c_open`).
-bit:= 0 or 1, the value to write.
+ * `handle`: >=0 (as returned by a prior call to `i2c_open`).
+ * `bit`: 0 or 1, the value to write.
 
 SMBus 2.0 5.5.1 - Quick command.
 ```
@@ -82,8 +82,8 @@ end
 """
 Sends a single byte to the device associated with handle.
 
-handle:= >=0 (as returned by a prior call to `i2c_open`).
-byte_val:= 0-255, the value to write.
+ * `handle`: >=0 (as returned by a prior call to `i2c_open`).
+ * `byte_val`: 0-255, the value to write.
 
 SMBus 2.0 5.5.2 - Send byte.
 ```
@@ -103,7 +103,7 @@ end
 """
 Reads a single byte from the device associated with handle.
 
-handle:= >=0 (as returned by a prior call to `i2c_open`).
+ * `handle`: >=0 (as returned by a prior call to `i2c_open`).
 
 SMBus 2.0 5.5.3 - Receive byte.
 ```
@@ -122,9 +122,9 @@ end
 Writes a single byte to the specified register of the device
 associated with handle.
 
-handle:= >=0 (as returned by a prior call to `i2c_open`).
-reg:= >=0, the device register.
-byte_val:= 0-255, the value to write.
+ * `handle`: >=0 (as returned by a prior call to `i2c_open`).
+ * `reg`: >=0, the device register.
+ * `byte_val`: 0-255, the value to write.
 
 SMBus 2.0 5.5.4 - Write byte.
 ```
@@ -155,9 +155,9 @@ end
 Writes a single 16 bit word to the specified register of the
 device associated with handle.
 
-handle:= >=0 (as returned by a prior call to `i2c_open`).
-reg:= >=0, the device register.
-word_val:= 0-65535, the value to write.
+ * `handle`: >=0 (as returned by a prior call to `i2c_open`).
+ * `reg`: >=0, the device register.
+ * `word_val`: 0-65535, the value to write.
 
 SMBus 2.0 5.5.4 - Write word.
 ```
@@ -188,8 +188,8 @@ end
 Reads a single byte from the specified register of the device
 associated with handle.
 
-handle:= >=0 (as returned by a prior call to `i2c_open`).
-reg:= >=0, the device register.
+ * `handle`: >=0 (as returned by a prior call to `i2c_open`).
+ * `reg`: >=0, the device register.
 
 SMBus 2.0 5.5.5 - Read byte.
 ```
@@ -212,8 +212,8 @@ end
 Reads a single 16 bit word from the specified register of the
 device associated with handle.
 
-handle:= >=0 (as returned by a prior call to `i2c_open`).
-reg:= >=0, the device register.
+ * `handle`: >=0 (as returned by a prior call to `i2c_open`).
+ * `reg`: >=0, the device register.
 
 SMBus 2.0 5.5.5 - Read word.
 ```
@@ -236,9 +236,9 @@ end
 Writes 16 bits of data to the specified register of the device
 associated with handle and reads 16 bits of data in return.
 
-handle:= >=0 (as returned by a prior call to `i2c_open`).
-reg:= >=0, the device register.
-word_val:= 0-65535, the value to write.
+ * `handle`: >=0 (as returned by a prior call to `i2c_open`).
+ * `reg`: >=0, the device register.
+ * `word_val`: 0-65535, the value to write.
 
 SMBus 2.0 5.5.6 - Process call.
 ```
@@ -267,9 +267,9 @@ end
 Writes up to 32 bytes to the specified register of the device
 associated with handle.
 
-handle:= >=0 (as returned by a prior call to `i2c_open`).
-reg:= >=0, the device register.
-data:= the bytes to write.
+ * `handle`: >=0 (as returned by a prior call to `i2c_open`).
+ * `reg`: >=0, the device register.
+ * `data`: the bytes to write.
 
 SMBus 2.0 5.5.7 - Block write.
 ```
@@ -305,8 +305,8 @@ end
 Reads a block of up to 32 bytes from the specified register of
 the device associated with handle.
 
-handle:= >=0 (as returned by a prior call to `i2c_open`).
-reg:= >=0, the device register.
+ * `handle`: >=0 (as returned by a prior call to `i2c_open`).
+ * `reg`: >=0, the device register.
 
 SMBus 2.0 5.5.7 - Block read.
 ```
@@ -347,9 +347,9 @@ Writes data bytes to the specified register of the device
 associated with handle and reads a device specified number
 of bytes of data in return.
 
-handle:= >=0 (as returned by a prior call to `i2c_open`).
-reg:= >=0, the device register.
-data:= the bytes to write.
+ * `handle`: >=0 (as returned by a prior call to `i2c_open`).
+ * `reg`: >=0, the device register.
+ * `data`: the bytes to write.
 
 The SMBus 2.0 documentation states that a minimum of 1 byte may
 be sent and a minimum of 1 byte may be received.  The total
@@ -399,9 +399,9 @@ end
 Writes data bytes to the specified register of the device
 associated with handle .  1-32 bytes may be written.
 
-handle:= >=0 (as returned by a prior call to `i2c_open`).
-reg:= >=0, the device register.
-data:= the bytes to write.
+ * `handle`: >=0 (as returned by a prior call to `i2c_open`).
+ * `reg`: >=0, the device register.
+ * `data`: the bytes to write.
 
 ```
 S Addr Wr [A] reg [A] data0 [A] data1 [A] ... [A] datan [NA] P
@@ -435,9 +435,9 @@ end
 Reads count bytes from the specified register of the device
 associated with handle .  The count may be 1-32.
 
-handle:= >=0 (as returned by a prior call to `i2c_open`).
-reg:= >=0, the device register.
-count:= >0, the number of bytes to read.
+ * `handle`: >=0 (as returned by a prior call to `i2c_open`).
+ * `reg`: >=0, the device register.
+ * `count`: >0, the number of bytes to read.
 
 ```
 S Addr Wr [A] reg [A]
@@ -482,8 +482,8 @@ end
 Returns count bytes read from the raw device associated
 with handle.
 
-handle:= >=0 (as returned by a prior call to `i2c_open`).
-count:= >0, the number of bytes to read.
+ * `handle`: >=0 (as returned by a prior call to `i2c_open`).
+ * `count`: >0, the number of bytes to read.
 
 ```
 S Addr Rd [A] [Data] A [Data] A ... A [Data] NA P
@@ -514,8 +514,8 @@ end
 """
 Writes the data bytes to the raw device associated with handle.
 
-handle:= >=0 (as returned by a prior call to `i2c_open`).
-data:= the bytes to write.
+ * `handle`: >=0 (as returned by a prior call to `i2c_open`).
+ * `data`: the bytes to write.
 
 ```
 S Addr Wr [A] data0 [A] data1 [A] ... [A] datan [A] P
@@ -550,8 +550,8 @@ This function executes a sequence of I2C operations.  The
 operations to be performed are specified by the contents of data
 which contains the concatenated command codes and associated data.
 
-handle:= >=0 (as returned by a prior call to `i2c_open`).
-data:= the concatenated I2C commands, see below
+ * `handle`: >=0 (as returned by a prior call to `i2c_open`).
+ * `data`: the concatenated I2C commands, see below
 
 The returned value is a tuple of the number of bytes read and a
 bytearray containing the bytes.  If there was an error the
@@ -628,9 +628,9 @@ o repeated starts
 o clock stretching
 o I2C on any pair of spare GPIO
 
-SDA:= 0-31
-SCL:= 0-31
-baud:= 50-500000
+ * `SDA`: 0-31
+ * `SCL`: 0-31
+ * `baud`: 50-500000
 
 Returns 0 if OK, otherwise `PiGPIO.PI_BAD_USER_GPIO`, `PiGPIO.PI_BAD_I2C_BAUD`,
 or `PiGPIO.PI_GPIO_IN_USE`.
@@ -660,7 +660,7 @@ end
 This function stops bit banging I2C on a pair of GPIO
 previously opened with `bb_i2c_open`.
 
-SDA:= 0-31, the SDA GPIO used in a prior call to `bb_i2c_open`
+ * `SDA`: 0-31, the SDA GPIO used in a prior call to `bb_i2c_open`
 
 Returns 0 if OK, otherwise `PiGPIO.PI_BAD_USER_GPIO`, or
 `PiGPIO.PI_NOT_I2C_GPIO`.
@@ -679,8 +679,8 @@ The operations to be performed are specified by the contents
 of data which contains the concatenated command codes and
 associated data.
 
-SDA:= 0-31 (as used in a prior call to `bb_i2c_open`)
-data:= the concatenated I2C commands, see below
+ * `SDA`: 0-31 (as used in a prior call to `bb_i2c_open`)
+ * `data`: the concatenated I2C commands, see below
 
 The returned value is a tuple of the number of bytes read and a
 bytearray containing the bytes.  If there was an error the

@@ -28,7 +28,7 @@ end
 """
 Adds a list of pulses to the current waveform.
 
-pulses:= list of pulses to add to the waveform.
+ * `pulses`: list of pulses to add to the waveform.
 
 Returns the new total number of pulses in the current waveform.
 
@@ -111,14 +111,14 @@ Adds a waveform representing serial data to the existing
 waveform (if any).  The serial data starts `offset`
 microseconds from the start of the waveform.
 
-user_gpio:= GPIO to transmit data.  You must set the GPIO mode
+ * `user_gpio`: GPIO to transmit data.  You must set the GPIO mode
    to output.
-baud:= 50-1000000 bits per second.
-data:= the bytes to write.
-offset:= number of microseconds from the start of the
+ * `baud`: 50-1000000 bits per second.
+ * `data`: the bytes to write.
+ * `offset`: number of microseconds from the start of the
    waveform, default 0.
-bb_bits:= number of data bits, default 8.
-bb_stop:= number of stop half bits, default 2.
+ * `bb_bits`: number of data bits, default 8.
+ * `bb_stop`: number of stop half bits, default 2.
 
 Returns the new total number of pulses in the current waveform.
 
@@ -206,7 +206,7 @@ end
 """
 This function deletes the waveform with id wave_id.
 
-wave_id:= >=0 (as returned by a prior call to `wave_create`).
+ * `wave_id`: >=0 (as returned by a prior call to `wave_create`).
 
 Wave ids are allocated in order, 0, 1, 2, etc.
 
@@ -245,7 +245,7 @@ once.
 NOTE: Any hardware PWM started by `hardware_PWM` will
 be cancelled.
 
-wave_id:= >=0 (as returned by a prior call to `wave_create`).
+ * `wave_id`: >=0 (as returned by a prior call to `wave_create`).
 
 Returns the number of DMA control blocks used in the waveform.
 
@@ -265,7 +265,7 @@ is made.
 NOTE: Any hardware PWM started by `hardware_PWM` will
 be cancelled.
 
-wave_id:= >=0 (as returned by a prior call to `wave_create`).
+ * `wave_id`: >=0 (as returned by a prior call to `wave_create`).
 
 Returns the number of DMA control blocks used in the waveform.
 
@@ -280,8 +280,8 @@ end
 """
 Transmits the waveform with id wave_id using mode mode.
 
-wave_id:= >=0 (as returned by a prior call to `wave_create`).
-mode:= WAVE_MODE_ONE_SHOT, WAVE_MODE_REPEAT,
+ * `wave_id`: >=0 (as returned by a prior call to `wave_create`).
+ * `mode`: WAVE_MODE_ONE_SHOT, WAVE_MODE_REPEAT,
     WAVE_MODE_ONE_SHOT_SYNC, or WAVE_MODE_REPEAT_SYNC.
 
 WAVE_MODE_ONE_SHOT: same as `wave_send_once`.
@@ -300,7 +300,7 @@ waveform before it has been synced to the new waveform.
 NOTE: Any hardware PWM started by `hardware_PWM` will
 be cancelled.
 
-wave_id:= >=0 (as returned by a prior call to `wave_create`).
+ * `wave_id`: >=0 (as returned by a prior call to `wave_create`).
 
 Returns the number of DMA control blocks used in the waveform.
 
