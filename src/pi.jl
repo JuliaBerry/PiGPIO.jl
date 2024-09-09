@@ -14,9 +14,9 @@ end
 """
 A class to store pulse information.
 
-gpio_on: the GPIO to switch on at the start of the pulse.
-gpio_off: the GPIO to switch off at the start of the pulse.
-delay: the delay in microseconds before the next pulse.
+`gpio_on`: the GPIO to switch on at the start of the pulse.
+`gpio_off`: the GPIO to switch off at the start of the pulse.
+`delay`: the delay in microseconds before the next pulse.
 """
 mutable struct Pulse
     gpio_on::Int
@@ -140,7 +140,7 @@ end
 """An ADT class to hold callback information
 
    gpio:= Broadcom GPIO number.
-   edge:= EITHER_EDGE, RISING_EDGE, or FALLING_EDGE.
+   edge:= `PiGPIO.EITHER_EDGE`, `PiGPIO.RISING_EDGE`, or `PiGPIO.FALLING_EDGE`.
    func:= a user function taking three arguments (GPIO, level, tick).
 """
 mutable struct Callback_ADT
