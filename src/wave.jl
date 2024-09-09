@@ -2,9 +2,9 @@
 Clears all waveforms and any data added by calls to the
 [*wave_add_**] functions.
 
-...
+```julia
 wave_clear(pi, )
-...
+```
 """
 function wave_clear(self::Pi)
     return _u2i(_pigpio_command(self.sl, _PI_CMD_WVCLR, 0, 0))
@@ -17,9 +17,9 @@ You would not normally need to call this function as it is
 automatically called after a waveform is created with the
 [*wave_create*] function.
 
-...
+```julia
 wave_add_new(pi, )
-...
+```
 """
 function wave_add_new(self::Pi)
     return _u2i(_pigpio_command(self.sl, _PI_CMD_WVNEW, 0, 0))
@@ -42,7 +42,7 @@ If the added waveform is intended to start after or within
 the existing waveform then the first pulse should consist
 solely of a delay.
 
-...
+```julia
 G1=4
 G2=24
 
@@ -83,7 +83,7 @@ time.sleep(4)
 wave_tx_stop(pi, ) # stop waveform
 
 wave_clear(pi, ) # clear all waveforms
-...
+```
 """
 function wave_add_generic(self::Pi, pulses)
     # pigpio message format
@@ -134,7 +134,7 @@ For [*bb_bits*] 1-8 there will be one byte per character.
 For [*bb_bits*] 9-16 there will be two bytes per character.
 For [*bb_bits*] 17-32 there will be four bytes per character.
 
-...
+```julia
 wave_add_serial(pi, 4, 300, 'Hello world')
 
 wave_add_serial(pi, 4, 300, b"Hello world")
@@ -142,7 +142,7 @@ wave_add_serial(pi, 4, 300, b"Hello world")
 wave_add_serial(pi, 4, 300, b'\\x23\\x01\\x00\\x45')
 
 wave_add_serial(pi, 17, 38400, [23, 128, 234], 5000)
-...
+```
 """
 function wave_add_serial(
     self::Pi, user_gpio, baud, data, offset=0, bb_bits=8, bb_stop=2)
@@ -195,9 +195,9 @@ to set all the fields to zero (the pulse will be ignored).
 When a waveform is started each pulse is executed in order with
 the specified delay between the pulse and the next.
 
-...
+```julia
 wid = wave_create(pi, )
-...
+```
 """
 function wave_create(self::Pi)
     return _u2i(_pigpio_command(self.sl, _PI_CMD_WVCRE, 0, 0))
@@ -210,11 +210,11 @@ wave_id:= >=0 (as returned by a prior call to [*wave_create*]).
 
 Wave ids are allocated in order, 0, 1, 2, etc.
 
-...
+```julia
 wave_delete(pi, 6) # delete waveform with id 6
 
 wave_delete(pi, 0) # delete waveform with id 0
-...
+```
 """
 function wave_delete(self::Pi, wave_id)
     return _u2i(_pigpio_command(self.sl, _PI_CMD_WVDEL, wave_id, 0))
@@ -249,9 +249,9 @@ wave_id:= >=0 (as returned by a prior call to [*wave_create*]).
 
 Returns the number of DMA control blocks used in the waveform.
 
-...
+```julia
 cbs = wave_send_once(pi, wid)
-...
+```
 """
 function wave_send_once(self::Pi, wave_id)
     return _u2i(_pigpio_command(self.sl, _PI_CMD_WVTX, wave_id, 0))
@@ -269,9 +269,9 @@ wave_id:= >=0 (as returned by a prior call to [*wave_create*]).
 
 Returns the number of DMA control blocks used in the waveform.
 
-...
+```julia
 cbs = wave_send_repeat(pi, wid)
-...
+```
 """
 function wave_send_repeat(self::Pi, wave_id)
     return _u2i(_pigpio_command(self.sl, _PI_CMD_WVTXR, wave_id, 0))
@@ -304,9 +304,9 @@ wave_id:= >=0 (as returned by a prior call to [*wave_create*]).
 
 Returns the number of DMA control blocks used in the waveform.
 
-...
+```julia
 cbs = wave_send_using_mode(pi, wid, WAVE_MODE_REPEAT_SYNC)
-...
+```
 """
 function wave_send_using_mode(self::Pi, wave_id, mode)
     return _u2i(_pigpio_command(self.sl, _PI_CMD_WVTXM, wave_id, mode))
@@ -322,9 +322,9 @@ values
 WAVE_NOT_FOUND (9998) - transmitted wave not found.
 NO_TX_WAVE (9999) - no wave being transmitted.
 
-...
+```julia
 wid = wave_tx_at(pi, )
-...
+```
 """
 function wave_tx_at(self::Pi)
     return _u2i(_pigpio_command(self.sl, _PI_CMD_WVTAT, 0, 0))
@@ -334,14 +334,14 @@ end
 Returns 1 if a waveform is currently being transmitted,
 otherwise 0.
 
-...
+```julia
 wave_send_once(pi, 0) # send first waveform
 
 while wave_tx_busy(pi, ): # wait for waveform to be sent
 time.sleep(0.1)
 
 wave_send_once(pi, 1) # send next waveform
-...
+```
 """
 function wave_tx_busy(self::Pi)
     return _u2i(_pigpio_command(self.sl, _PI_CMD_WVBSY, 0, 0))
@@ -353,13 +353,13 @@ Stops the transmission of the current waveform.
 This function is intended to stop a waveform started with
 wave_send_repeat.
 
-...
+```julia
 wave_send_repeat(pi, 3)
 
 time.sleep(5)
 
 wave_tx_stop(pi, )
-...
+```
 """
 function wave_tx_stop(self::Pi)
     return _u2i(_pigpio_command(self.sl, _PI_CMD_WVHLT, 0, 0))
@@ -402,7 +402,7 @@ If present Loop Forever must be the last entry in the chain.
 The code is currently dimensioned to support a chain with
 roughly 600 entries and 20 loop counters.
 
-...
+```julia
 #!/usr/bin/env python
 
 import time
@@ -449,7 +449,7 @@ for i in range(WAVES)
 wave_delete(pi, wid[i])
 
 stop(pi, )
-...
+```
 """
 function wave_chain(self::Pi, data)
 # I p1 0
@@ -464,9 +464,9 @@ end
 """
 Returns the length in microseconds of the current waveform.
 
-...
+```julia
 micros = wave_get_micros(pi, )
-...
+```
 """
 function wave_get_micros(self::Pi)
     return _u2i(_pigpio_command(self.sl, _PI_CMD_WVSM, 0, 0))
@@ -475,9 +475,9 @@ end
 """
 Returns the maximum possible size of a waveform in microseconds.
 
-...
+```julia
 micros = wave_get_max_micros(pi, )
-...
+```
 """
 function wave_get_max_micros(self::Pi)
     return _u2i(_pigpio_command(self.sl, _PI_CMD_WVSM, 2, 0))
@@ -486,9 +486,9 @@ end
 """
 Returns the length in pulses of the current waveform.
 
-...
+```julia
 pulses = wave_get_pulses(pi, )
-...
+```
 """
 function wave_get_pulses(self::Pi)
     return _u2i(_pigpio_command(self.sl, _PI_CMD_WVSP, 0, 0))
@@ -497,9 +497,9 @@ end
 """
 Returns the maximum possible size of a waveform in pulses.
 
-...
+```julia
 pulses = wave_get_max_pulses(pi, )
-...
+```
 """
 function wave_get_max_pulses(self::Pi)
     return _u2i(_pigpio_command(self.sl, _PI_CMD_WVSP, 2, 0))
@@ -509,9 +509,9 @@ end
 Returns the length in DMA control blocks of the current
 waveform.
 
-...
+```julia
 cbs = wave_get_cbs(pi, )
-...
+```
 """
 function wave_get_cbs(self::Pi)
     return _u2i(_pigpio_command(self.sl, _PI_CMD_WVSC, 0, 0))
@@ -521,9 +521,9 @@ end
 Returns the maximum possible size of a waveform in DMA
 control blocks.
 
-...
+```julia
 cbs = wave_get_max_cbs(pi, )
-...
+```
 """
 function wave_get_max_cbs(self::Pi)
     return _u2i(_pigpio_command(self.sl, _PI_CMD_WVSC, 2, 0))

@@ -75,11 +75,11 @@ E.g. 32 12-bit words will be transferred in 64 bytes.
 
 The other bits in flags should be set to zero.
 
-...
+```julia
 # open SPI device on channel 1 in mode 3 at 50000 bits per second
 
 h = spi_open(pi, 1, 50000, 3)
-...
+```
 """
 function spi_open(self::Pi, spi_channel, baud, spi_flags=0)
     # I p1 spi_channel
@@ -98,9 +98,9 @@ Closes the SPI device associated with handle.
 
 handle:= >=0 (as returned by a prior call to [*spi_open*]).
 
-...
+```julia
 spi_close(pi, h)
-...
+```
 """
 function spi_close(self, handle)
     return _u2i(_pigpio_command(self.sl, _PI_CMD_SPIC, handle, 0))
@@ -117,13 +117,13 @@ bytearray containing the bytes.  If there was an error the
 number of bytes read will be less than zero (and will contain
 the error code).
 
-...
+```julia
 (b, d) = spi_read(pi, h, 60) # read 60 bytes from device h
 if b == 60
 # process read data
 else
 # error path
-...
+```
 """
 function spi_read(self::Pi, handle, count)
     # Don't raise exception.  Must release lock.
@@ -144,7 +144,7 @@ Writes the data bytes to the SPI device associated with handle.
 handle:= >=0 (as returned by a prior call to [*spi_open*]).
 data:= the bytes to write.
 
-...
+```julia
 spi_write(pi, 0, b'\\x02\\xc0\\x80') # write 3 bytes to device 0
 
 spi_write(pi, 0, b'defgh')        # write 5 bytes to device 0
@@ -152,7 +152,7 @@ spi_write(pi, 0, b'defgh')        # write 5 bytes to device 0
 spi_write(pi, 0, "def")           # write 3 bytes to device 0
 
 spi_write(pi, 1, [2, 192, 128])   # write 3 bytes to device 1
-...
+```
 """
 function spi_write(self::Pi, handle, data)
     # I p1 handle
@@ -176,7 +176,7 @@ bytearray containing the bytes.  If there was an error the
 number of bytes read will be less than zero (and will contain
 the error code).
 
-...
+```julia
 (count, rx_data) = spi_xfer(pi, h, b'\\x01\\x80\\x00')
 
 (count, rx_data) = spi_xfer(pi, h, [1, 128, 0])
@@ -184,7 +184,7 @@ the error code).
 (count, rx_data) = spi_xfer(pi, h, b"hello")
 
 (count, rx_data) = spi_xfer(pi, h, "hello")
-...
+```
 """
 function spi_xfer(self::Pi, handle, data)
     # I p1 handle
@@ -222,11 +222,11 @@ The baud rate must be one of 50, 75, 110, 134, 150,
 200, 300, 600, 1200, 1800, 2400, 4800, 9600, 19200,
 38400, 57600, 115200, or 230400.
 
-...
+```julia
 h1 = serial_open(pi, "/dev/ttyAMA0", 300)
 
 h2 = serial_open(pi, "/dev/ttyUSB1", 19200, 0)
-...
+```
 """
 function serial_open(self::Pi, tty, baud, ser_flags=0)
     # I p1 baud
@@ -243,9 +243,9 @@ Closes the serial device associated with handle.
 
 handle:= >=0 (as returned by a prior call to [*serial_open*]).
 
-...
+```julia
 serial_close(pi, h1)
-...
+```
 """
 function serial_close(self::Pi, handle)
     return _u2i(_pigpio_command(self.sl, _PI_CMD_SERC, handle, 0))
@@ -256,9 +256,9 @@ Returns a single byte from the device associated with handle.
 
 handle:= >=0 (as returned by a prior call to [*serial_open*]).
 
-...
+```julia
 b = serial_read_byte(pi, h1)
-...
+```
 """
 function serial_read_byte(self::Pi, handle)
     return _u2i(_pigpio_command(self.sl, _PI_CMD_SERRB, handle, 0))
@@ -270,11 +270,11 @@ Writes a single byte to the device associated with handle.
 handle:= >=0 (as returned by a prior call to [*serial_open*]).
 byte_val:= 0-255, the value to write.
 
-...
+```julia
 serial_write_byte(pi, h1, 23)
 
 serial_write_byte(h1, ord(pi, 'Z'))
-...
+```
 """
 function serial_write_byte(self::Pi, handle, byte_val)
     return _u2i(
@@ -292,11 +292,11 @@ bytearray containing the bytes.  If there was an error the
 number of bytes read will be less than zero (and will contain
 the error code).
 
-...
+```julia
 (b, d) = serial_read(pi, h2, 100)
 if b > 0
 # process read data
-...
+```
 """
 function serial_read(self::Pi, handle, count)
     # Don't raise exception.  Must release lock.
@@ -317,7 +317,7 @@ Writes the data bytes to the device associated with handle.
 handle:= >=0 (as returned by a prior call to [*serial_open*]).
 data:= the bytes to write.
 
-...
+```julia
 serial_write(pi, h1, b'\\x02\\x03\\x04')
 
 serial_write(pi, h2, b'help')
@@ -325,7 +325,7 @@ serial_write(pi, h2, b'help')
 serial_write(pi, h2, "hello")
 
 serial_write(pi, h1, [2, 3, 4])
-...
+```
 """
 function serial_write(self::Pi, handle, data)
     # I p1 handle
@@ -344,12 +344,12 @@ device associated with handle.
 
 handle:= >=0 (as returned by a prior call to [*serial_open*]).
 
-...
+```julia
 rdy = serial_data_available(pi, h1)
 
 if rdy > 0
 (b, d) = serial_read(pi, h1, rdy)
-...
+```
 """
 function serial_data_available(self::Pi, handle)
     return _u2i(_pigpio_command(self.sl, _PI_CMD_SERDA, handle, 0))
@@ -368,10 +368,10 @@ The serial data is held in a cyclic buffer and is read using
 It is the caller's responsibility to read data from the cyclic
 buffer in a timely fashion.
 
-...
+```julia
 status = bb_serial_read_open(pi, 4, 19200)
 status = bb_serial_read_open(pi, 17, 9600)
-...
+```
 """
 function bb_serial_read_open(self, user_gpio, baud, bb_bits=8)
     # pigpio message format
@@ -405,9 +405,9 @@ For [*bb_bits*] 1-8 there will be one byte per character.
 For [*bb_bits*] 9-16 there will be two bytes per character.
 For [*bb_bits*] 17-32 there will be four bytes per character.
 
-...
+```julia
 (count, data) = bb_serial_read(pi, 4)
-...
+```
 """
 function bb_serial_read(self, user_gpio)
     # Don't raise exception.  Must release lock.
@@ -427,9 +427,9 @@ Closes a GPIO for bit bang reading of serial data.
 
 user_gpio:= 0-31 (opened in a prior call to [*bb_serial_read_open*])
 
-...
+```julia
 status = bb_serial_read_close(pi, 17)
-...
+```
 """
 function bb_serial_read_close(self, user_gpio)
     return _u2i(_pigpio_command(self.sl, _PI_CMD_SLRC, user_gpio, 0))
@@ -441,9 +441,9 @@ Invert serial logic.
 user_gpio:= 0-31 (opened in a prior call to [*bb_serial_read_open*])
 invert:= 0-1 (1 invert, 0 normal)
 
-...
+```julia
 status = bb_serial_invert(pi, 17, 1)
-...
+```
 """
 function bb_serial_invert(self, user_gpio, invert)
     return _u2i(_pigpio_command(self.sl, _PI_CMD_SLRI, user_gpio, invert))
