@@ -672,7 +672,7 @@ set_servo_pulsewidth(pi, 17, 2000) # safe clockwise
 """
 function set_servo_pulsewidth(self::Pi, user_gpio, pulsewidth)
     return _u2i(_pigpio_command(
-        self.sl, _PI_CMD_SERVO, user_gpio, int(pulsewidth)))
+        self.sl, _PI_CMD_SERVO, user_gpio, Int(pulsewidth)))
 end
 
 """
