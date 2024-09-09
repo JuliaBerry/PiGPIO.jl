@@ -280,18 +280,18 @@ end
 """
 Transmits the waveform with id wave_id using mode mode.
 
- * `wave_id`: >=0 (as returned by a prior call to `wave_create`).
- * `mode`: WAVE_MODE_ONE_SHOT, WAVE_MODE_REPEAT,
-    WAVE_MODE_ONE_SHOT_SYNC, or WAVE_MODE_REPEAT_SYNC.
+ * `wave_id`: >0= (as returned by a prior call to `wave_create`).
+ * `mode`: `PiGPIO.WAVE_MODE_ONE_SHOT`, `PiGPIO.WAVE_MODE_REPEAT`,
+    `PiGPIO.WAVE_MODE_ONE_SHOT_SYNC`, or `PiGPIO.WAVE_MODE_REPEAT_SYNC`.
 
-WAVE_MODE_ONE_SHOT: same as `wave_send_once`.
+`PiGPIO.WAVE_MODE_ONE_SHOT`: same as `wave_send_once`.
 
-WAVE_MODE_REPEAT same as `wave_send_repeat`.
+`PiGPIO.WAVE_MODE_REPEAT` same as `wave_send_repeat`.
 
-WAVE_MODE_ONE_SHOT_SYNC same as `wave_send_once` but tries
+`PiGPIO.WAVE_MODE_ONE_SHOT_SYNC` same as `wave_send_once` but tries
 to sync with the previous waveform.
 
-WAVE_MODE_REPEAT_SYNC same as `wave_send_repeat` but tries
+`PiGPIO.WAVE_MODE_REPEAT_SYNC` same as `wave_send_repeat` but tries
 to sync with the previous waveform.
 
 WARNING: bad things may happen if you delete the previous
@@ -305,7 +305,7 @@ be cancelled.
 Returns the number of DMA control blocks used in the waveform.
 
 ```julia
-cbs = wave_send_using_mode(pi, wid, WAVE_MODE_REPEAT_SYNC)
+cbs = wave_send_using_mode(pi, wid, PiGPIO.WAVE_MODE_REPEAT_SYNC)
 ```
 """
 function wave_send_using_mode(self::Pi, wave_id, mode)
@@ -319,8 +319,8 @@ transmitted.
 Returns the waveform id or one of the following special
 values
 
-WAVE_NOT_FOUND (9998) - transmitted wave not found.
-NO_TX_WAVE (9999) - no wave being transmitted.
+`PiGPIO.WAVE_NOT_FOUND` (9998) - transmitted wave not found.
+`PiGPIO.NO_TX_WAVE` (9999) - no wave being transmitted.
 
 ```julia
 wid = wave_tx_at(pi, )
@@ -351,14 +351,14 @@ end
 Stops the transmission of the current waveform.
 
 This function is intended to stop a waveform started with
-wave_send_repeat.
+`wave_send_repeat`.
 
 ```julia
 wave_send_repeat(pi, 3)
 
-time.sleep(5)
+sleep(5)
 
-wave_tx_stop(pi, )
+wave_tx_stop(pi)
 ```
 """
 function wave_tx_stop(self::Pi)
@@ -391,11 +391,13 @@ Delays between waves may be added with the delay command.
 
 The following command codes are supported
 
+```
 Name         @ Cmd & Data @ Meaning
 Loop Start   @ 255 0      @ Identify start of a wave block
 Loop Repeat  @ 255 1 x y  @ loop x + y*256 times
 Delay        @ 255 2 x y  @ delay x + y*256 microseconds
 Loop Forever @ 255 3      @ loop forever
+```
 
 If present Loop Forever must be the last entry in the chain.
 
