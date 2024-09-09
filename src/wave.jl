@@ -1,6 +1,6 @@
 """
 Clears all waveforms and any data added by calls to the
-[*wave_add_**] functions.
+`wave_add_*` functions.
 
 ```julia
 wave_clear(pi, )
@@ -15,7 +15,7 @@ Starts a new empty waveform.
 
 You would not normally need to call this function as it is
 automatically called after a waveform is created with the
-[*wave_create*] function.
+`wave_create` function.
 
 ```julia
 wave_add_new(pi, )
@@ -108,7 +108,7 @@ end
 
 """
 Adds a waveform representing serial data to the existing
-waveform (if any).  The serial data starts [*offset*]
+waveform (if any).  The serial data starts `offset`
 microseconds from the start of the waveform.
 
 user_gpio:= GPIO to transmit data.  You must set the GPIO mode
@@ -122,17 +122,17 @@ bb_stop:= number of stop half bits, default 2.
 
 Returns the new total number of pulses in the current waveform.
 
-The serial data is formatted as one start bit, [*bb_bits*]
-data bits, and [*bb_stop*]/2 stop bits.
+The serial data is formatted as one start bit, `bb_bits`
+data bits, and `bb_stop`/2 stop bits.
 
 It is legal to add serial data streams with different baud
 rates to the same waveform.
 
-The bytes required for each character depend upon [*bb_bits*].
+The bytes required for each character depend upon `bb_bits`.
 
-For [*bb_bits*] 1-8 there will be one byte per character.
-For [*bb_bits*] 9-16 there will be two bytes per character.
-For [*bb_bits*] 17-32 there will be four bytes per character.
+For `bb_bits` 1-8 there will be one byte per character.
+For `bb_bits` 9-16 there will be two bytes per character.
+For `bb_bits` 17-32 there will be four bytes per character.
 
 ```julia
 wave_add_serial(pi, 4, 300, 'Hello world')
@@ -157,29 +157,29 @@ end
 
 """
 Creates a waveform from the data provided by the prior calls
-to the [*wave_add_**] functions.
+to the `wave_add_*` functions.
 
 Returns a wave id (>=0) if OK,  otherwise PI_EMPTY_WAVEFORM,
 PI_TOO_MANY_CBS, PI_TOO_MANY_OOL, or PI_NO_WAVEFORM_ID.
 
-The data provided by the [*wave_add_**] functions is consumed by
+The data provided by the `wave_add_*` functions is consumed by
 this function.
 
 As many waveforms may be created as there is space available.
-The wave id is passed to [*wave_send_**] to specify the waveform
+The wave id is passed to `wave_send_*` to specify the waveform
 to transmit.
 
 Normal usage would be
 
-Step 1. [*wave_clear*] to clear all waveforms and added data.
+Step 1. `wave_clear` to clear all waveforms and added data.
 
-Step 2. [*wave_add_**] calls to supply the waveform data.
+Step 2. `wave_add_*` calls to supply the waveform data.
 
-Step 3. [*wave_create*] to create the waveform and get a unique id
+Step 3. `wave_create` to create the waveform and get a unique id
 
 Repeat steps 2 and 3 as needed.
 
-Step 4. [*wave_send_**] with the id of the waveform to transmit.
+Step 4. `wave_send_*` with the id of the waveform to transmit.
 
 A waveform comprises one or more pulses.
 
@@ -206,7 +206,7 @@ end
 """
 This function deletes the waveform with id wave_id.
 
-wave_id:= >=0 (as returned by a prior call to [*wave_create*]).
+wave_id:= >=0 (as returned by a prior call to `wave_create`).
 
 Wave ids are allocated in order, 0, 1, 2, etc.
 
@@ -223,7 +223,7 @@ end
 """
 This function is deprecated and has been removed.
 
-Use [*wave_create*]/[*wave_send_**] instead.
+Use `wave_create`/`wave_send_*` instead.
 """
 function wave_tx_start(self::Pi) # DEPRECATED
     return _u2i(_pigpio_command(self.sl, _PI_CMD_WVGO, 0, 0))
@@ -232,7 +232,7 @@ end
 """
 This function is deprecated and has beeen removed.
 
-Use [*wave_create*]/[*wave_send_**] instead.
+Use `wave_create`/`wave_send_*` instead.
 """
 function wave_tx_repeat(self::Pi) # DEPRECATED
     return _u2i(_pigpio_command(self.sl, _PI_CMD_WVGOR, 0, 0))
@@ -242,10 +242,10 @@ end
 Transmits the waveform with id wave_id.  The waveform is sent
 once.
 
-NOTE: Any hardware PWM started by [*hardware_PWM*] will
+NOTE: Any hardware PWM started by `hardware_PWM` will
 be cancelled.
 
-wave_id:= >=0 (as returned by a prior call to [*wave_create*]).
+wave_id:= >=0 (as returned by a prior call to `wave_create`).
 
 Returns the number of DMA control blocks used in the waveform.
 
@@ -259,13 +259,13 @@ end
 
 """
 Transmits the waveform with id wave_id.  The waveform repeats
-until wave_tx_stop is called or another call to [*wave_send_**]
+until wave_tx_stop is called or another call to `wave_send_*`
 is made.
 
-NOTE: Any hardware PWM started by [*hardware_PWM*] will
+NOTE: Any hardware PWM started by `hardware_PWM` will
 be cancelled.
 
-wave_id:= >=0 (as returned by a prior call to [*wave_create*]).
+wave_id:= >=0 (as returned by a prior call to `wave_create`).
 
 Returns the number of DMA control blocks used in the waveform.
 
@@ -280,27 +280,27 @@ end
 """
 Transmits the waveform with id wave_id using mode mode.
 
-wave_id:= >=0 (as returned by a prior call to [*wave_create*]).
+wave_id:= >=0 (as returned by a prior call to `wave_create`).
 mode:= WAVE_MODE_ONE_SHOT, WAVE_MODE_REPEAT,
     WAVE_MODE_ONE_SHOT_SYNC, or WAVE_MODE_REPEAT_SYNC.
 
-WAVE_MODE_ONE_SHOT: same as [*wave_send_once*].
+WAVE_MODE_ONE_SHOT: same as `wave_send_once`.
 
-WAVE_MODE_REPEAT same as [*wave_send_repeat*].
+WAVE_MODE_REPEAT same as `wave_send_repeat`.
 
-WAVE_MODE_ONE_SHOT_SYNC same as [*wave_send_once*] but tries
+WAVE_MODE_ONE_SHOT_SYNC same as `wave_send_once` but tries
 to sync with the previous waveform.
 
-WAVE_MODE_REPEAT_SYNC same as [*wave_send_repeat*] but tries
+WAVE_MODE_REPEAT_SYNC same as `wave_send_repeat` but tries
 to sync with the previous waveform.
 
 WARNING: bad things may happen if you delete the previous
 waveform before it has been synced to the new waveform.
 
-NOTE: Any hardware PWM started by [*hardware_PWM*] will
+NOTE: Any hardware PWM started by `hardware_PWM` will
 be cancelled.
 
-wave_id:= >=0 (as returned by a prior call to [*wave_create*]).
+wave_id:= >=0 (as returned by a prior call to `wave_create`).
 
 Returns the number of DMA control blocks used in the waveform.
 
@@ -368,11 +368,11 @@ end
 """
 This function transmits a chain of waveforms.
 
-NOTE: Any hardware PWM started by [*hardware_PWM*]
+NOTE: Any hardware PWM started by `hardware_PWM`
 will be cancelled.
 
 The waves to be transmitted are specified by the contents
-of data which contains an ordered list of [*wave_id*]s
+of data which contains an ordered list of `wave_id`s
 and optional command codes and related data.
 
 Returns 0 if OK, otherwise PI_CHAIN_NESTING,
