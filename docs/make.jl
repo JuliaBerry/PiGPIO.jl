@@ -12,7 +12,7 @@ makedocs(
     modules = [PiGPIO],
     pages = [
         "index.md",
-        "Tutorial" => "tutorial.md"
+        "Tutorial" => "tutorial.md",
         "API Docs" => "api.md",
         "Examples" => [
             "Blink Once" => "examples/01_blink.md",
