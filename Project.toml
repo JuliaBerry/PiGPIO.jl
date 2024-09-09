@@ -4,6 +4,7 @@ version = "0.2.0"
 
 [compat]
 julia = "1"
+Sockets = "1"
 
 [deps]
 Sockets = "6462fe0b-24de-5631-8697-dd941f90decc"
