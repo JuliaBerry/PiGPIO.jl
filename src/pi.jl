@@ -45,15 +45,16 @@ function error_text(errnum)
 end
 
 """
-Returns the microsecond difference between two ticks.
+    PiGPIO.tickDiff(t1,t2)
 
-t1:= the earlier tick
-t2:= the later tick
+Returns the microsecond difference between two ticks `t1` (the earlier tick)
+and `t2` the later tick. If `t2 - t1 < 0`, it is assumed that the time counter
+wrapped around the Int32 limit.
 
-...
-print(pigpio.tickDiff(4294967272, 12))
-36
-...
+```julia
+print(PiGPIO.tickDiff(4294967272, 12))
+# output 36
+```
 """
 function tickDiff(t1, t2)
    tDiff = t2 - t1
@@ -173,7 +174,11 @@ function CallbackThread(control, host, port)
     #self.start()  #TODO
 end
 
-"""Stops notifications."""
+"""
+    PiGPIO.stop(self::CallbackThread)
+
+Stops notifications.
+"""
 function stop(self::CallbackThread)
     if self.go
         self.go = false
@@ -361,13 +366,13 @@ end
 
 
 """
-Returns the GPIO mode.
+    get_mode(self::Pi, gpio)
 
-gpio:= 0-53.
+Returns the GPIO mode for the pin `gpio` (integer between 0 and 53).
 
-Returns a value as follows
+Returns a value as follows:
 
-. .
+```
 0 = INPUT
 1 = OUTPUT
 2 = ALT5
@@ -376,12 +381,13 @@ Returns a value as follows
 5 = ALT1
 6 = ALT2
 7 = ALT3
-. .
+```
 
-...
+
+```julia
 print(get_mode(pi, 0))
-4
-...
+# output 4
+```
 """
 function get_mode(self::Pi, gpio)
     return _u2i(_pigpio_command(self.sl, _PI_CMD_MODEG, gpio, 0))
@@ -389,16 +395,18 @@ end
 
 
 """
-Sets or clears the internal GPIO pull-up/down resistor.
+    set_pull_up_down(self::Pi, gpio, pud)
 
-gpio:= 0-53.
-pud:= PUD_UP, PUD_DOWN, PUD_OFF.
+Sets or clears the internal GPIO pull-up/down resistor
+for the pin `gpio` (integer between 0 and 53).
+Possible values for `pud` are `PiGPIO.PUD_UP`, `PiGPIO.PUD_DOWN` or
+`PiGPIO.PUD_OFF`.
 
-...
-set_pull_up_down(pi, 17, pigpio.PUD_OFF)
-set_pull_up_down(pi, 23, pigpio.PUD_UP)
-set_pull_up_down(pi, 24, pigpio.PUD_DOWN)
-...
+```julia
+set_pull_up_down(pi, 17, PiGPIO.PUD_OFF)
+set_pull_up_down(pi, 23, PiGPIO.PUD_UP)
+set_pull_up_down(pi, 24, PiGPIO.PUD_DOWN)
+```
 """
 function set_pull_up_down(self::Pi, gpio, pud)
     return _u2i(_pigpio_command(self.sl, _PI_CMD_PUD, gpio, pud))
@@ -406,46 +414,46 @@ end
 
 
 """
-Returns the GPIO level.
+    read(self::Pi, gpio)
 
-gpio:= 0-53.
+Returns the GPIO level for the pin `gpio` (an integer between 0 and 53).
 
-...
-set_mode(pi, 23, pigpio.INPUT)
+```julia
+set_mode(pi, 23, PiGPIO.INPUT)
 
-set_pull_up_down(pi, 23, pigpio.PUD_DOWN)
+set_pull_up_down(pi, 23, PiGPIO.PUD_DOWN)
 print(read(pi, 23))
-0
+# output 0
 
-set_pull_up_down(pi, 23, pigpio.PUD_UP)
+set_pull_up_down(pi, 23, PiGPIO.PUD_UP)
 print(read(pi, 23))
-1
-...
+# output 1
+```
 """
 function read(self::Pi, gpio)
     return _u2i(_pigpio_command(self.sl, _PI_CMD_READ, gpio, 0))
 end
 
 """
-Sets the GPIO level.
+    write(self::Pi, gpio, level)
 
-GPIO:= 0-53.
-level:= 0, 1.
+Sets the GPIO level for the pin `gpio` (an integer between 0 and 53) where
+level is 0 or 1.
 
 If PWM or servo pulses are active on the GPIO they are
 switched off.
 
-...
-set_mode(pi, 17, pigpio.OUTPUT)
+```julia
+set_mode(pi, 17, PiGPIO.OUTPUT)
 
 write(pi, 17,0)
 print(read(pi, 17))
-0
+# output 0
 
 write(pi, 17,1)
 print(read(pi, 17))
-1
-...
+# output 1
+```
 """
 function write(self::Pi, gpio, level)
     return _u2i(_pigpio_command(self.sl, _PI_CMD_WRITE, gpio, level))
@@ -453,20 +461,22 @@ end
 
 
 """
+    PiGPIO.set_PWM_dutycycle(self::Pi, user_gpio, dutycycle)
+
 Starts (non-zero dutycycle) or stops (0) PWM pulses on the GPIO.
 
 user_gpio:= 0-31.
 dutycycle:= 0-range (range defaults to 255).
 
-The [*set_PWM_range*] function can change the default range of 255.
+The `set_PWM_range` function can change the default range of 255.
 
-...
+```julia
 set_PWM_dutycycle(pi, 4,   0) # PWM off
 set_PWM_dutycycle(pi, 4,  64) # PWM 1/4 on
 set_PWM_dutycycle(pi, 4, 128) # PWM 1/2 on
 set_PWM_dutycycle(pi, 4, 192) # PWM 3/4 on
 set_PWM_dutycycle(pi, 4, 255) # PWM full on
-...
+```
 """
 function set_PWM_dutycycle(self::Pi, user_gpio, dutycycle)
     return _u2i(_pigpio_command(
@@ -474,15 +484,13 @@ function set_PWM_dutycycle(self::Pi, user_gpio, dutycycle)
 end
 
 """
-Returns the PWM dutycycle being used on the GPIO.
+    PiGPIO.get_PWM_dutycycle(self::Pi, user_gpio)
 
+Returns the PWM dutycycle being used on the GPIO.
 user_gpio:= 0-31.
 
-Returns the PWM dutycycle.
-
-
 For normal PWM the dutycycle will be out of the defined range
-for the GPIO (see [*get_PWM_range*]).
+for the GPIO (see `get_PWM_range`).
 
 If a hardware clock is active on the GPIO the reported
 dutycycle will be 500000 (500k) out of 1000000 (1M).
@@ -490,55 +498,58 @@ dutycycle will be 500000 (500k) out of 1000000 (1M).
 If hardware PWM is active on the GPIO the reported dutycycle
 will be out of a 1000000 (1M).
 
-...
+```julia
 set_PWM_dutycycle(pi, 4, 25)
 print(get_PWM_dutycycle(pi, 4))
-25
+# output 25
 
 set_PWM_dutycycle(pi, 4, 203)
 print(get_PWM_dutycycle(pi, 4))
-203
-...
+# output 203
+```
 """
 function get_PWM_dutycycle(self::Pi, user_gpio)
     return _u2i(_pigpio_command(self.sl, _PI_CMD_GDC, user_gpio, 0))
 end
 
 """
+    PiGPIO.set_PWM_range(self::Pi, user_gpio, range_)
+
 Sets the range of PWM values to be used on the GPIO.
+`user_gpio` is an integer between 0 and 31 and `range_` is between 25 and 40000.
 
-user_gpio:= 0-31.
- range_:= 25-40000.
-
-...
+```julia
 set_PWM_range(pi, 9, 100)  # now  25 1/4,   50 1/2,   75 3/4 on
 set_PWM_range(pi, 9, 500)  # now 125 1/4,  250 1/2,  375 3/4 on
 set_PWM_range(pi, 9, 3000) # now 750 1/4, 1500 1/2, 2250 3/4 on
-...
+```
 """
 function set_PWM_range(self::Pi, user_gpio, range_)
     return _u2i(_pigpio_command(self.sl, _PI_CMD_PRS, user_gpio, range_))
 end
 
 """
-Returns the range of PWM values being used on the GPIO.
+    PiGPIO.get_PWM_range(self::Pi, user_gpio)
 
-user_gpio:= 0-31.
+Returns the range of PWM values being used on the GPIO.
+`user_gpio` is an integer between 0 and 31.
 
 If a hardware clock or hardware PWM is active on the GPIO
 the reported range will be 1000000 (1M).
 
-...
+```julia
 set_PWM_range(pi, 9, 500)
 print(get_PWM_range(pi, 9))
-500
-...
+# output 500
+```
 """
 function get_PWM_range(self::Pi, user_gpio)
     return _u2i(_pigpio_command(self.sl, _PI_CMD_PRG, user_gpio, 0))
 end
 
 """
+    PiGPIO.get_PWM_real_range(self::Pi, user_gpio)
+
 Returns the real (underlying) range of PWM values being
 used on the GPIO.
 
@@ -550,11 +561,11 @@ real range will be 1000000 (1M).
 If hardware PWM is active on the GPIO the reported real range
 will be approximately 250M divided by the set PWM frequency.
 
-...
+```julia
 set_PWM_frequency(pi, 4, 800)
 print(get_PWM_real_range(pi, 4))
-250
-...
+# output 250
+```
 """
 function get_PWM_real_range(self::Pi, user_gpio)
     return _u2i(_pigpio_command(self.sl, _PI_CMD_PRRG, user_gpio, 0))
@@ -581,7 +592,7 @@ sample rate is set when the pigpio daemon is started.
 
 The frequencies for each sample rate are
 
-. .
+```
                      Hertz
 
      1: 40000 20000 10000 8000 5000 4000 2500 2000 1600
@@ -602,9 +613,10 @@ rate
 
     10:  4000  2000  1000  800  500  400  250  200  160
           125   100    80   50   40   25   20   10    5
-. .
+```
 
-...
+
+```julia
 set_PWM_frequency(pi, 4,0)
 print(get_PWM_frequency(pi, 4))
 10
@@ -612,7 +624,7 @@ print(get_PWM_frequency(pi, 4))
 set_PWM_frequency(pi, 4,100000)
 print(get_PWM_frequency(pi, 4))
 8000
-...
+```
 """
 function set_PWM_frequency(self::Pi, user_gpio, frequency)
     return _u2i(
@@ -627,15 +639,15 @@ user_gpio:= 0-31.
 Returns the frequency (in Hz) used for the GPIO.
 
 For normal PWM the frequency will be that defined for the GPIO
-by [*set_PWM_frequency*].
+by `set_PWM_frequency`.
 
 If a hardware clock is active on the GPIO the reported frequency
-will be that set by [*hardware_clock*].
+will be that set by `hardware_clock`.
 
 If hardware PWM is active on the GPIO the reported frequency
-will be that set by [*hardware_PWM*].
+will be that set by `hardware_PWM`.
 
-...
+```julia
 set_PWM_frequency(pi, 4,0)
 print(get_PWM_frequency(pi, 4))
 10
@@ -643,7 +655,7 @@ print(get_PWM_frequency(pi, 4))
 set_PWM_frequency(pi, 4, 800)
 print(get_PWM_frequency(pi, 4))
 800
-...
+```
 """
 function get_PWM_frequency(self::Pi, user_gpio)
     return _u2i(_pigpio_command(self.sl, _PI_CMD_PFG, user_gpio, 0))
@@ -666,12 +678,12 @@ safe and represents the mid-point of rotation.
 You can DAMAGE a servo if you command it to move beyond its
 limits.
 
-...
+```julia
 set_servo_pulsewidth(pi, 17, 0)    # off
 set_servo_pulsewidth(pi, 17, 1000) # safe anti-clockwise
 set_servo_pulsewidth(pi, 17, 1500) # centre
 set_servo_pulsewidth(pi, 17, 2000) # safe clockwise
-...
+```
 """
 function set_servo_pulsewidth(self::Pi, user_gpio, pulsewidth)
     return _u2i(_pigpio_command(
@@ -685,7 +697,7 @@ user_gpio:= 0-31.
 
 Returns the servo pulsewidth.
 
-...
+```julia
 set_servo_pulsewidth(pi, 4, 525)
 print(get_servo_pulsewidth(pi, 4))
 525
@@ -693,13 +705,15 @@ print(get_servo_pulsewidth(pi, 4))
 set_servo_pulsewidth(pi, 4, 2130)
 print(get_servo_pulsewidth(pi, 4))
 2130
-...
+```
 """
 function get_servo_pulsewidth(self::Pi, user_gpio)
     return _u2i(_pigpio_command(self.sl, _PI_CMD_GPW, user_gpio, 0))
 end
 
 """
+    PiGPIO.notify_open(self::Pi)
+
 Returns a notification handle (>=0).
 
 A notification is a method for being notified of GPIO state
@@ -708,30 +722,30 @@ changes via a pipe.
 Pipes are only accessible from the local machine so this
 function serves no purpose if you are using Python from a
 remote machine.  The in-built (socket) notifications
-provided by [*callback*] should be used instead.
+provided by `callback` should be used instead.
 
-Notifications for handle x will be available at the pipe
-named /dev/pigpiox (where x is the handle number).
+Notifications for handle `x` will be available at the pipe
+named `/dev/pigpiox` (where `x` is the handle number).
 
 E.g. if the function returns 15 then the notifications must be
-read from /dev/pigpio15.
+read from `/dev/pigpio15`.
 
 Notifications have the following structure.
 
-. .
+```
 I seqno
 I flags
 I tick
 I level
-. .
+```
 
 seqno: starts at 0 each time the handle is opened and then
 increments by one for each report.
 
-flags: two flags are defined, PI_NTFY_FLAGS_WDOG and
-PI_NTFY_FLAGS_ALIVE.  If bit 5 is set (PI_NTFY_FLAGS_WDOG)
+flags: two flags are defined, `PI_NTFY_FLAGS_WDOG` and
+`PI_NTFY_FLAGS_ALIVE`.  If bit 5 is set (`PI_NTFY_FLAGS_WDOG`)
 then bits 0-4 of the flags indicate a GPIO which has had a
-watchdog timeout; if bit 6 is set (PI_NTFY_FLAGS_ALIVE) this
+watchdog timeout; if bit 6 is set (`PI_NTFY_FLAGS_ALIVE`) this
 indicates a keep alive signal on the pipe/socket and is sent
 once a minute in the absence of other notification activity.
 
@@ -741,11 +755,11 @@ around after 1h12m.
 level: indicates the level of each GPIO.  If bit 1<<x is set
 then GPIO x is high.
 
-...
-h = notify_open(pi, )
+```julia
+h = notify_open(pi)
 if h >= 0
     notify_begin(pi, h, 1234)
-...
+```
 """
 function notify_open(self::Pi)
     return _u2i(_pigpio_command(self.sl, _PI_CMD_NO, 0, 0))
@@ -754,7 +768,7 @@ end
 """
 Starts notifications on a handle.
 
-handle:= >=0 (as returned by a prior call to [*notify_open*])
+handle:= >=0 (as returned by a prior call to `notify_open`)
 bits:= a 32 bit mask indicating the GPIO to be notified.
 
 The notification sends state changes for each GPIO whose
@@ -763,11 +777,11 @@ corresponding bit in bits is set.
 The following code starts notifications for GPIO 1, 4,
 6, 7, and 10 (1234 = 0x04D2 = 0b0000010011010010).
 
-...
-h = notify_open(pi, )
+```julia
+h = notify_open(pi)
 if h >= 0
     notify_begin(pi, h, 1234)
-...
+```
 """
 function notify_begin(self::Pi, handle, bits)
     return _u2i(_pigpio_command(self.sl, _PI_CMD_NB, handle, bits))
@@ -776,21 +790,21 @@ end
 """
 Pauses notifications on a handle.
 
-handle:= >=0 (as returned by a prior call to [*notify_open*])
+handle:= >=0 (as returned by a prior call to `notify_open`)
 
 Notifications for the handle are suspended until
-[*notify_begin*] is called again.
+`notify_begin` is called again.
 
-...
-h = notify_open(pi, )
+```julia
+h = notify_open(pi)
 if h >= 0
     notify_begin(pi, h, 1234)
-    ...
+    # ...
     notify_pause(pi, h)
-    ...
+    # ...
     notify_begin(pi, h, 1234)
-    ...
-...
+    # ...
+```
 """
 function notify_pause(self::Pi, handle)
     return _u2i(_pigpio_command(self.sl, _PI_CMD_NB, handle, 0))
@@ -799,16 +813,16 @@ end
 """
 Stops notifications on a handle and releases the handle for reuse.
 
-handle:= >=0 (as returned by a prior call to [*notify_open*])
+handle:= >=0 (as returned by a prior call to `notify_open`)
 
-...
-h = notify_open(pi, )
+```julia
+h = notify_open(pi)
 if h >= 0
     notify_begin(pi, h, 1234)
-    ...
+    # ...
     notify_close(pi, h)
-    ...
-...
+    # ...
+```
 """
 function notify_close(self::Pi, handle)
     return _u2i(_pigpio_command(self.sl, _PI_CMD_NC, handle, 0))
@@ -833,10 +847,10 @@ to the fifo with the flags set to indicate a watchdog timeout.
 The callback class interprets the flags and will
 call registered callbacks for the GPIO with level TIMEOUT.
 
-...
+```julia
 set_watchdog(pi, 23, 1000) # 1000 ms watchdog on GPIO 23
 set_watchdog(pi, 23, 0)    # cancel watchdog on GPIO 23
-...
+```
 """
 function set_watchdog(self::Pi, user_gpio, wdog_timeout)
     return _u2i(_pigpio_command(
@@ -849,10 +863,10 @@ Returns the levels of the bank 1 GPIO (GPIO 0-31).
 The returned 32 bit integer has a bit set if the corresponding
 GPIO is high.  GPIO n has bit value (1<<n).
 
-...
-print(bin(read_bank_1(pi, )))
+```julia
+print(bin(read_bank_1(pi)))
 0b10010100000011100100001001111
-...
+```
 """
 function read_bank_1(self::Pi)
 	return _pigpio_command(self.sl, _PI_CMD_BR1, 0, 0)
@@ -864,61 +878,67 @@ Returns the levels of the bank 2 GPIO (GPIO 32-53).
 The returned 32 bit integer has a bit set if the corresponding
 GPIO is high.  GPIO n has bit value (1<<(n-32)).
 
-...
-print(bin(read_bank_2(pi, )))
+```julia
+print(bin(read_bank_2(pi)))
 0b1111110000000000000000
-...
+```
 """
 function read_bank_2(self::Pi)
     return _pigpio_command(self.sl, _PI_CMD_BR2, 0, 0)
 end
 
 """
+    PiGPIO.clear_bank_1(self::Pi, bits)
+
 Clears GPIO 0-31 if the corresponding bit in bits is set.
 
-bits:= a 32 bit mask with 1 set if the corresponding GPIO is
+`bits` is a 32 bit mask with 1 set if the corresponding GPIO is
  to be cleared.
 
-A returned status of PI_SOME_PERMITTED indicates that the user
+A returned status of `PiGPIO.PI_SOME_PERMITTED` indicates that the user
 is not allowed to write to one or more of the GPIO.
 
-...
-clear_bank_1(int(pi, "111110010000",2))
-...
+```julia
+clear_bank_1(pi,0b111110010000)
+```
 """
 function clear_bank_1(self::Pi, bits)
     return _u2i(_pigpio_command(self.sl, _PI_CMD_BC1, bits, 0))
 end
 
 """
+    PiGPIO.clear_bank_2(self::Pi, bits)
+
 Clears GPIO 32-53 if the corresponding bit (0-21) in bits is set.
 
-bits:= a 32 bit mask with 1 set if the corresponding GPIO is
+`bits` is a 32 bit mask with 1 set if the corresponding GPIO is
 to be cleared.
 
-A returned status of PI_SOME_PERMITTED indicates that the user
+A returned status of `PiGPIO.PI_SOME_PERMITTED` indicates that the user
 is not allowed to write to one or more of the GPIO.
 
-...
+```julia
 clear_bank_2(pi, 0x1010)
-...
+```
 """
 function clear_bank_2(self::Pi, bits)
     return _u2i(_pigpio_command(self.sl, _PI_CMD_BC2, bits, 0))
 end
 
 """
+    PiGPIO.set_bank_1(self::Pi, bits)
+
 Sets GPIO 0-31 if the corresponding bit in bits is set.
 
-bits:= a 32 bit mask with 1 set if the corresponding GPIO is
+`bits` is a 32 bit mask with 1 set if the corresponding GPIO is
  to be set.
 
-A returned status of PI_SOME_PERMITTED indicates that the user
+A returned status of `PiGPIO.PI_SOME_PERMITTED` indicates that the user
 is not allowed to write to one or more of the GPIO.
 
-...
-set_bank_1(int(pi, "111110010000",2))
-...
+```julia
+set_bank_1(pi, 0b111110010000)
+```
 """
 function set_bank_1(self::Pi, bits)
     return _u2i(_pigpio_command(self.sl, _PI_CMD_BS1, bits, 0))
@@ -930,34 +950,34 @@ Sets GPIO 32-53 if the corresponding bit (0-21) in bits is set.
 bits:= a 32 bit mask with 1 set if the corresponding GPIO is
  to be set.
 
-A returned status of PI_SOME_PERMITTED indicates that the user
+A returned status of `PiGPIO.PI_SOME_PERMITTED` indicates that the user
 is not allowed to write to one or more of the GPIO.
 
-...
+```julia
 set_bank_2(pi, 0x303)
-...
+```
 """
 function set_bank_2(self::Pi, bits)
     return _u2i(_pigpio_command(self.sl, _PI_CMD_BS2, bits, 0))
 end
 
 """
+    PiGPIO.hardware_clock(self::Pi, gpio, clkfreq)
+
 Starts a hardware clock on a GPIO at the specified frequency.
-Frequencies above 30MHz are unlikely to work.
-
-gpio:= see description
-clkfreq:= 0 (off) or 4689-250000000 (250M)
+Frequencies above 30MHz are unlikely to work. See description below for the
+`gpio` parameter. `clkfreq` is 0 (off) or 4689-250000000 (250M)
 
 
-Returns 0 if OK, otherwise PI_NOT_PERMITTED, PI_BAD_GPIO,
-PI_NOT_HCLK_GPIO, PI_BAD_HCLK_FREQ,or PI_BAD_HCLK_PASS.
+Returns 0 if OK, otherwise `PiGPIO.PI_NOT_PERMITTED`, `PiGPIO.PI_BAD_GPIO`,
+`PiGPIO.PI_NOT_HCLK_GPIO`, `PiGPIO.PI_BAD_HCLK_FREQ`, or `PiGPIO.PI_BAD_HCLK_PASS`.
 
 The same clock is available on multiple GPIO.  The latest
 frequency setting will be used by all GPIO which share a clock.
 
 The GPIO must be one of the following.
 
-. .
+```
 4   clock 0  All models
 5   clock 1  All models but A and B (reserved for system use)
 6   clock 2  All models but A and B
@@ -969,39 +989,41 @@ The GPIO must be one of the following.
 42  clock 1  Compute module only (reserved for system use)
 43  clock 2  Compute module only
 44  clock 1  Compute module only (reserved for system use)
-. .
+```
 
 Access to clock 1 is protected by a password as its use will
 likely crash the Pi.  The password is given by or'ing 0x5A000000
 with the GPIO number.
 
-...
+```julia
 hardware_clock(pi, 4, 5000) # 5 KHz clock on GPIO 4
 
 hardware_clock(pi, 4, 40000000) # 40 MHz clock on GPIO 4
-...
+```
 """
 function hardware_clock(self::Pi, gpio, clkfreq)
     return _u2i(_pigpio_command(self.sl, _PI_CMD_HC, gpio, clkfreq))
 end
 
 """
+    PiGPIO.hardware_PWM(self::Pi, gpio, PWMfreq, PWMduty)
+
 Starts hardware PWM on a GPIO at the specified frequency
 and dutycycle. Frequencies above 30MHz are unlikely to work.
 
-NOTE: Any waveform started by [*wave_send_once*],
-[*wave_send_repeat*], or [*wave_chain*] will be cancelled.
+NOTE: Any waveform started by `wave_send_once`,
+`wave_send_repeat`, or `wave_chain` will be cancelled.
 
 This function is only valid if the pigpio main clock is PCM.
 The main clock defaults to PCM but may be overridden when the
 pigpio daemon is started (option -t).
 
-gpio:= see descripton
-PWMfreq:= 0 (off) or 1-125000000 (125M).
-PWMduty:= 0 (off) to 1000000 (1M)(fully on).
+`gpio`: see descripton,
+`PWMfreq`: 0 (off) or 1-125000000 (125M),
+`PWMduty`: 0 (off) to 1000000 (1M)(fully on).
 
-Returns 0 if OK, otherwise PI_NOT_PERMITTED, PI_BAD_GPIO,
-PI_NOT_HPWM_GPIO, PI_BAD_HPWM_DUTY, PI_BAD_HPWM_FREQ.
+Returns 0 if OK, otherwise `PiGPIO.PI_NOT_PERMITTED`, `PiGPIO.PI_BAD_GPIO`,
+`PiGPIO.PI_NOT_HPWM_GPIO`, `PiGPIO.PI_BAD_HPWM_DUTY`, `PiGPIO.PI_BAD_HPWM_FREQ`.
 
 The same PWM channel is available on multiple GPIO.
 The latest frequency and dutycycle setting will be used
@@ -1009,7 +1031,7 @@ by all GPIO which share a PWM channel.
 
 The GPIO must be one of the following.
 
-. .
+```
 12  PWM channel 0  All models but A and B
 13  PWM channel 1  All models but A and B
 18  PWM channel 0  All models
@@ -1020,7 +1042,7 @@ The GPIO must be one of the following.
 45  PWM channel 1  Compute module only
 52  PWM channel 0  Compute module only
 53  PWM channel 1  Compute module only
-. .
+```
 
 The actual number of steps beween off and fully on is the
 integral part of 250 million divided by PWMfreq.
@@ -1032,13 +1054,12 @@ Lower frequencies will have more steps and higher
 frequencies will have fewer steps.  PWMduty is
 automatically scaled to take this into account.
 
-...
-hardware_PWM(pi, 18, 800, 250000) # 800Hz 25% dutycycle
+```julia
+PiGPIO.hardware_PWM(pi, 18, 800, 250000) # 800Hz 25% dutycycle
 
-hardware_PWM(pi, 18, 2000, 750000) # 2000Hz 75% dutycycle
-...
+PiGPIO.hardware_PWM(pi, 18, 2000, 750000) # 2000Hz 75% dutycycle
+```
 """
-
 function hardware_PWM(self::Pi, gpio, PWMfreq, PWMduty)
 # pigpio message format
 
@@ -1054,30 +1075,34 @@ function hardware_PWM(self::Pi, gpio, PWMfreq, PWMduty)
 end
 
 """
+    PiGPIO.get_current_tick(self::Pi)
+
 Returns the current system tick.
 
 Tick is the number of microseconds since system boot.  As an
 unsigned 32 bit quantity tick wraps around approximately
 every 71.6 minutes.
 
-...
-t1 = get_current_tick(pi, )
-time.sleep(1)
-t2 = get_current_tick(pi, )
-...
+```julia
+t1 = PiGPIO.get_current_tick(pi)
+sleep(1)
+t2 = PiGPIO.get_current_tick(pi)
+```
 """
 function get_current_tick(self::Pi)
     return _pigpio_command(self.sl, _PI_CMD_TICK, 0, 0)
 end
 
 """
+    PiGPIO.get_hardware_revision(self::Pi)
+
 Returns the Pi's hardware revision number.
 
 The hardware revision is the last few characters on the
-Revision line of /proc/cpuinfo.
+revision line of `/proc/cpuinfo`.
 
 The revision number can be used to determine the assignment
-of GPIO to pins (see [*gpio*]).
+of GPIO to pins (see `gpio`).
 
 There are at least three types of board.
 
@@ -1090,49 +1115,53 @@ Type 3 boards have hardware revision numbers of 16 or greater.
 If the hardware revision can not be found or is not a valid
 hexadecimal number the function returns 0.
 
-...
-print(get_hardware_revision(pi, ))
+```julia
+print(get_hardware_revision(pi))
 2
-...
+```
 """
 function get_hardware_revision(self::Pi)
     return _pigpio_command(self.sl, _PI_CMD_HWVER, 0, 0)
 end
 
 """
+    PiGPIO.get_pigpio_version(self::Pi)
+
 Returns the pigpio software version.
 
-...
-v = get_pigpio_version(pi, )
-...
+```julia
+v = get_pigpio_version(pi)
+```
 """
 function get_pigpio_version(self::Pi)
     return _pigpio_command(self.sl, _PI_CMD_PIGPV, 0, 0)
 end
 
 """
+    PiGPIO.custom_1(self, arg1=0, arg2=0, argx=[])
+
 Calls a pigpio function customised by the user.
 
-arg1:= >=0, default 0.
-arg2:= >=0, default 0.
-argx:= extra arguments (each 0-255), default empty.
+`arg1` is >=0, default 0.
+`arg2` is >=0, default 0.
+`argx` is an extra arguments (each 0-255), default empty.
 
 The returned value is an integer which by convention
 should be >=0 for OK and <0 for error.
 
-...
-value = custom_1(pi, )
+```julia
+value = PiGPIO.custom_1(pi)
 
-value = custom_1(pi, 23)
+value = PiGPIO.custom_1(pi, 23)
 
-value = custom_1(pi, 0, 55)
+value = PiGPIO.custom_1(pi, 0, 55)
 
-value = custom_1(pi, 23, 56, [1, 5, 7])
+value = PiGPIO.custom_1(pi, 23, 56, [1, 5, 7])
 
-value = custom_1(pi, 23, 56, b"hello")
+value = PiGPIO.custom_1(pi, 23, 56, b"hello")
 
-value = custom_1(pi, 23, 56, "hello")
-...
+value = PiGPIO.custom_1(pi, 23, 56, "hello")
+```
 """
 function custom_1(self, arg1=0, arg2=0, argx=[])
     # I p1 arg1
@@ -1146,28 +1175,29 @@ function custom_1(self, arg1=0, arg2=0, argx=[])
 end
 
 """
+    PiGPIO.custom_2(self, arg1=0, argx=[], retMax=8192)
+
 Calls a pigpio function customised by the user.
 
-arg1:= >=0, default 0.
-argx:= extra arguments (each 0-255), default empty.
-retMax:= >=0, maximum number of bytes to return, default 8192.
+`arg1` is >=0, default 0. `argx`  extra arguments (each 0-255), default empty.
+`retMax` is >=0, maximum number of bytes to return, default 8192.
 
 The returned value is a tuple of the number of bytes
 returned and a bytearray containing the bytes.  If
 there was an error the number of bytes read will be
 less than zero (and will contain the error code).
 
-...
-(count, data) = custom_2(pi, )
+```julia
+(count, data) = PiGPIO.custom_2(pi)
 
-(count, data) = custom_2(pi, 23)
+(count, data) = PiGPIO.custom_2(pi, 23)
 
-(count, data) = custom_2(pi, 23, [1, 5, 7])
+(count, data) = PiGPIO.custom_2(pi, 23, [1, 5, 7])
 
-(count, data) = custom_2(pi, 23, b"hello")
+(count, data) = PiGPIO.custom_2(pi, 23, b"hello")
 
-(count, data) = custom_2(pi, 23, "hello", 128)
-...
+(count, data) = PiGPIO.custom_2(pi, 23, "hello", 128)
+```
 """
 function custom_2(self, arg1=0, argx=[], retMax=8192)
     # I p1 arg1
@@ -1189,11 +1219,13 @@ function custom_2(self, arg1=0, argx=[], retMax=8192)
 end
 
 """
+    PiGPIO.callback(self::Pi, user_gpio, edge=RISING_EDGE, func=nothing)
+
 Calls a user supplied function (a callback) whenever the
 specified GPIO edge is detected.
 
 user_gpio:= 0-31.
-edge:= EITHER_EDGE, RISING_EDGE (default), or FALLING_EDGE.
+edge:= `PiGPIO.EITHER_EDGE`, `PiGPIO.RISING_EDGE` (default), or `PiGPIO.FALLING_EDGE`.
 func:= user supplied callback function.
 
 The user supplied callback receives three parameters, the GPIO,
@@ -1209,15 +1241,14 @@ The callback may be cancelled by calling the cancel function.
 A GPIO may have multiple callbacks (although I can't think of
 a reason to do so).
 
-...
+```julia
+function cbf(gpio, level, tick)
+   print(gpio, level, tick)
 end
 
-function cbf(gpio, level, tick)
-print(gpio, level, tick)
+cb1 = callback(pi, 22, PiGPIO.EITHER_EDGE, cbf)
 
-cb1 = callback(pi, 22, pigpio.EITHER_EDGE, cbf)
-
-cb2 = callback(pi, 4, pigpio.EITHER_EDGE)
+cb2 = callback(pi, 4, PiGPIO.EITHER_EDGE)
 
 cb3 = callback(pi, 17)
 
@@ -1226,7 +1257,7 @@ print(cb3.tally())
 cb3.reset_tally()
 
 cb1.cancel() # To cancel callback cb1.
-...
+```
 """
 function callback(self::Pi, user_gpio, edge=RISING_EDGE, func=nothing)
     return _callback(self._notify, user_gpio, edge, func)
@@ -1246,22 +1277,22 @@ the number of seconds specified by timeout has expired.
 Do not use this function for precise timing purposes,
 the edge is only checked 20 times a second. Whenever
 you need to know the accurate time of GPIO events use
-a [*callback*] function.
+a `callback` function.
 
 The function returns true if the edge is detected,
 otherwise false.
 
-...
+```julia
 if wait_for_edge(pi, 23)
 print("Rising edge detected")
 else
 print("wait for edge timed out")
 
-if wait_for_edge(pi, 23, pigpio.FALLING_EDGE, 5.0)
+if wait_for_edge(pi, 23, PiGPIO.FALLING_EDGE, 5.0)
 print("Falling edge detected")
 else
 print("wait for falling edge timed out")
-...
+```
 """
 function wait_for_edge(self::Pi, user_gpio, edge=RISING_EDGE, wait_timeout=60.0)
     a = _wait_for_edge(self.notify, user_gpio, edge, wait_timeout)
@@ -1269,13 +1300,16 @@ function wait_for_edge(self::Pi, user_gpio, edge=RISING_EDGE, wait_timeout=60.0)
 end
 
 """
+    Pi(; host = get(ENV, "PIGPIO_ADDR", ""),
+       port = get(ENV, "PIGPIO_PORT", 8888))
+
 Grants access to a Pi's GPIO.
 
-host:= the host name of the Pi on which the pigpio daemon is
+`host` is the host name of the Pi on which the pigpio daemon is
  running.  The default is localhost unless overridden by
  the PIGPIO_ADDR environment variable.
 
-port:= the port number on which the pigpio daemon is listening.
+`port` is the port number on which the pigpio daemon is listening.
  The default is 8888 unless overridden by the PIGPIO_PORT
  environment variable.  The pigpio daemon must have been
  started with the same port number.
@@ -1283,19 +1317,20 @@ port:= the port number on which the pigpio daemon is listening.
 This connects to the pigpio daemon and reserves resources
 to be used for sending commands and receiving notifications.
 
-An instance attribute [*connected*] may be used to check the
+An instance attribute `connected` may be used to check the
 success of the connection.  If the connection is established
-successfully [*connected*] will be true, otherwise false.
+successfully `connected` will be true, otherwise false.
 
-...
-pi = pigpio.pi()              # use defaults
-pi = pigpio.pi('mypi')       # specify host, default port
-pi = pigpio.pi('mypi', 7777) # specify host and port
+```julia
+pi = PiGPIO.Pi()                           # use defaults
+pi = PiGPIO.Pi(host = "mypi")              # specify host, default port
+pi = PiGPIO.Pi(host = "mypi", port = 7777) # specify host and port
 
-pi = pigpio.pi()             # exit script if no connection
-if not pi.connected
-exit()
-...
+pi = PiGPIO.Pi()                           # exit script if no connection
+if !pi.connected
+   exit()
+end
+```
 """
 function Pi(; host = get(ENV, "PIGPIO_ADDR", ""), port = get(ENV, "PIGPIO_PORT", 8888))
     port = Int(port)
@@ -1327,10 +1362,14 @@ function Pi(; host = get(ENV, "PIGPIO_ADDR", ""), port = get(ENV, "PIGPIO_PORT",
 end
 
 
-"""Release pigpio resources.
-...
-stop(pi)
-...
+"""
+    PiGPIO.stop(self::Pi)
+
+Release pigpio resources.
+
+```julia
+PiGPIO.stop(pi)
+```
 """
 function stop(self::Pi)
     self.connected = false
