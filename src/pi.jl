@@ -341,16 +341,18 @@ function rxbuf(self::Pi, count)
 end
 
 """
-Sets the GPIO mode.
+    set_mode(pi::Pi, pin::Int, mode)
 
-gpio:= 0-53.
-mode:= INPUT, OUTPUT, ALT0, ALT1, ALT2, ALT3, ALT4, ALT5.
+Sets the GPIO `mode` of the given `pin` (integer between 0 and 53) of the
+Pi instance `pi`. The mode con be `PiGPIO.INPUT`, `PiGPIO.OUTPUT`,
+`PiGPIO.ALT0`, `PiGPIO.ALT1`, `PiGPIO.ALT2`, `PiGPIO.ALT3`, `PiGPIO.ALT4` or
+`PiGPIO.ALT5`.
 
-...
-set_mode(pi,  4, pigpio.INPUT)  # GPIO  4 as input
-set_mode(pi, 17, pigpio.OUTPUT) # GPIO 17 as output
-set_mode(pi, 24, pigpio.ALT2)   # GPIO 24 as ALT2
-...
+```julia
+set_mode(pi,  4, PiGPIO.INPUT)  # GPIO  4 as input
+set_mode(pi, 17, PiGPIO.OUTPUT) # GPIO 17 as output
+set_mode(pi, 24, PiGPIO.ALT2)   # GPIO 24 as ALT2
+```
 """
 function set_mode(self::Pi, gpio, mode)
     return _u2i(_pigpio_command(self.sl, _PI_CMD_MODES, gpio, mode))
