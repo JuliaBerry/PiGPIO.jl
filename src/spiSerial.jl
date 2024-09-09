@@ -13,7 +13,7 @@ spi_channel:= 0-1 (0-2 for the auxiliary SPI device).
  baud:= 32K-125M (values above 30M are unlikely to work).
 spi_flags:= see below.
 
-Normally you would only use the [*spi_**] functions if
+Normally you would only use the `spi_*` functions if
 you are or will be connecting to the Pi over a network.  If
 you will always run on the local Pi use the standard SPI
 module instead.
@@ -63,7 +63,7 @@ first.  Auxiliary SPI device only.
 bbbbbb defines the word size in bits (0-32).  The default (0)
 sets 8 bits per word.  Auxiliary SPI device only.
 
-The [*spi_read*], [*spi_write*], and [*spi_xfer*] functions
+The `spi_read`, `spi_write`, and `spi_xfer` functions
 transfer data packed into 1, 2, or 4 bytes according to
 the word size in bits.
 
@@ -96,7 +96,7 @@ end
 """
 Closes the SPI device associated with handle.
 
-handle:= >=0 (as returned by a prior call to [*spi_open*]).
+handle:= >=0 (as returned by a prior call to `spi_open`).
 
 ```julia
 spi_close(pi, h)
@@ -109,7 +109,7 @@ end
 """
 Reads count bytes from the SPI device associated with handle.
 
-handle:= >=0 (as returned by a prior call to [*spi_open*]).
+handle:= >=0 (as returned by a prior call to `spi_open`).
 count:= >0, the number of bytes to read.
 
 The returned value is a tuple of the number of bytes read and a
@@ -141,7 +141,7 @@ end
 """
 Writes the data bytes to the SPI device associated with handle.
 
-handle:= >=0 (as returned by a prior call to [*spi_open*]).
+handle:= >=0 (as returned by a prior call to `spi_open`).
 data:= the bytes to write.
 
 ```julia
@@ -168,7 +168,7 @@ end
 Writes the data bytes to the SPI device associated with handle,
 returning the data bytes read from the device.
 
-handle:= >=0 (as returned by a prior call to [*spi_open*]).
+handle:= >=0 (as returned by a prior call to `spi_open`).
 data:= the bytes to write.
 
 The returned value is a tuple of the number of bytes read and a
@@ -213,7 +213,7 @@ tty:= the serial device to open.
 baud:= baud rate in bits per second, see below.
 ser_flags:= 0, no flags are currently defined.
 
-Normally you would only use the [*serial_**] functions if
+Normally you would only use the `serial_*` functions if
 you are or will be connecting to the Pi over a network.  If
 you will always run on the local Pi use the standard serial
 module instead.
@@ -241,7 +241,7 @@ end
 """
 Closes the serial device associated with handle.
 
-handle:= >=0 (as returned by a prior call to [*serial_open*]).
+handle:= >=0 (as returned by a prior call to `serial_open`).
 
 ```julia
 serial_close(pi, h1)
@@ -254,7 +254,7 @@ end
 """
 Returns a single byte from the device associated with handle.
 
-handle:= >=0 (as returned by a prior call to [*serial_open*]).
+handle:= >=0 (as returned by a prior call to `serial_open`).
 
 ```julia
 b = serial_read_byte(pi, h1)
@@ -267,7 +267,7 @@ end
 """
 Writes a single byte to the device associated with handle.
 
-handle:= >=0 (as returned by a prior call to [*serial_open*]).
+handle:= >=0 (as returned by a prior call to `serial_open`).
 byte_val:= 0-255, the value to write.
 
 ```julia
@@ -284,7 +284,7 @@ end
 """
 Reads up to count bytes from the device associated with handle.
 
-handle:= >=0 (as returned by a prior call to [*serial_open*]).
+handle:= >=0 (as returned by a prior call to `serial_open`).
 count:= >0, the number of bytes to read.
 
 The returned value is a tuple of the number of bytes read and a
@@ -314,7 +314,7 @@ end
 """
 Writes the data bytes to the device associated with handle.
 
-handle:= >=0 (as returned by a prior call to [*serial_open*]).
+handle:= >=0 (as returned by a prior call to `serial_open`).
 data:= the bytes to write.
 
 ```julia
@@ -342,7 +342,7 @@ end
 Returns the number of bytes available to be read from the
 device associated with handle.
 
-handle:= >=0 (as returned by a prior call to [*serial_open*]).
+handle:= >=0 (as returned by a prior call to `serial_open`).
 
 ```julia
 rdy = serial_data_available(pi, h1)
@@ -363,7 +363,7 @@ baud:= 50-250000, the baud rate.
 bb_bits:= 1-32, the number of bits per word, default 8.
 
 The serial data is held in a cyclic buffer and is read using
-[*bb_serial_read*].
+`bb_serial_read`.
 
 It is the caller's responsibility to read data from the cyclic
 buffer in a timely fashion.
@@ -390,7 +390,7 @@ end
 """
 Returns data from the bit bang serial cyclic buffer.
 
-user_gpio:= 0-31 (opened in a prior call to [*bb_serial_read_open*])
+user_gpio:= 0-31 (opened in a prior call to `bb_serial_read_open`)
 
 The returned value is a tuple of the number of bytes read and a
 bytearray containing the bytes.  If there was an error the
@@ -398,12 +398,12 @@ number of bytes read will be less than zero (and will contain
 the error code).
 
 The bytes returned for each character depend upon the number of
-data bits [*bb_bits*] specified in the [*bb_serial_read_open*]
+data bits `bb_bits` specified in the `bb_serial_read_open`
 command.
 
-For [*bb_bits*] 1-8 there will be one byte per character.
-For [*bb_bits*] 9-16 there will be two bytes per character.
-For [*bb_bits*] 17-32 there will be four bytes per character.
+For `bb_bits` 1-8 there will be one byte per character.
+For `bb_bits` 9-16 there will be two bytes per character.
+For `bb_bits` 17-32 there will be four bytes per character.
 
 ```julia
 (count, data) = bb_serial_read(pi, 4)
@@ -425,7 +425,7 @@ end
 """
 Closes a GPIO for bit bang reading of serial data.
 
-user_gpio:= 0-31 (opened in a prior call to [*bb_serial_read_open*])
+user_gpio:= 0-31 (opened in a prior call to `bb_serial_read_open`)
 
 ```julia
 status = bb_serial_read_close(pi, 17)
@@ -438,7 +438,7 @@ end
 """
 Invert serial logic.
 
-user_gpio:= 0-31 (opened in a prior call to [*bb_serial_read_open*])
+user_gpio:= 0-31 (opened in a prior call to `bb_serial_read_open`)
 invert:= 0-1 (1 invert, 0 normal)
 
 ```julia
