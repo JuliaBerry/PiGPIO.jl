@@ -25,19 +25,20 @@ mutable struct Pulse
 end
 
 """
-Returns a text description of a pigpio error.
+    PiGPIO.error_text(errnum)
 
-errnum:= <0, the error number
+Returns a text description of a PiGPIO error number.
+`errnum` (`errnum` <0).
 
-...
-print(pigpio.error_text(-5))
-level not 0-1
-...
+```julia
+print(PiGPIO.error_text(-5))
+# output: level not 0-1
+```
 """
 function error_text(errnum)
     for e in _errors
-        if e[0] == errnum
-           return e[1]
+        if e[1] == errnum
+           return e[2]
        end
     end
     return "unknown error ($ernum)"
