@@ -54,14 +54,14 @@ pi=Pi() #connect to pigpiod daemon on localhost
 ## Example Usage
 
 ```julia
-set_mode(p::Pi, pin::Int, mode)
-get_mode(p::Pi, pin::Int)
-# mode can be INPUT or OUTPUT
+set_mode(pi::Pi, pin::Int, mode)
+get_mode(pi::Pi, pin::Int)
+# mode can be PiGPIO.INPUT or PiGPIO.OUTPUT
 
-PiGPIO.read(p, pin)
-PiGPIO.write(p, pin, state)
-#state can be HIGH, LOW, ON, OFF
+PiGPIO.read(pi, pin)
+PiGPIO.write(pi, pin, state)
+# state can be PiGPIO.HIGH, PiGPIO.LOW, PiGPIO.ON, PiGPIO.OFF
 
-PiGPIO.set_PWM_dutycycle(p, pin, dutycyle)
-#dutycyle defaults to a range 0-255
+PiGPIO.set_PWM_dutycycle(pi, pin, dutycyle)
+# dutycyle defaults to a range 0-255
 ```
