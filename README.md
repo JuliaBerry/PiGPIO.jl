@@ -3,6 +3,7 @@
 #### Control GPIO pins on the Raspberry Pi from Julia
 
 [![][docs-stable-img]][docs-stable-url]
+[![documentation dev](https://img.shields.io/badge/docs-dev-blue.svg)](https://juliaberry.github.io/PiGPIO.jl/dev/)
 
 [docs-stable-img]: https://img.shields.io/badge/docs-stable-blue.svg
 [docs-stable-url]: https://juliahub.com/docs/PiGPIO/
