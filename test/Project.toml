@@ -1,0 +1,3 @@
+[deps]
+PiGPIO = "bb151fc1-c6dc-5496-8ed6-07f94907e623"
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
