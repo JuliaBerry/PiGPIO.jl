@@ -1,6 +1,6 @@
 name = "PiGPIO"
 uuid = "bb151fc1-c6dc-5496-8ed6-07f94907e623"
-version = "0.2.0"
+version = "0.2.1"
 
 [compat]
 julia = "1"
