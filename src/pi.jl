@@ -123,11 +123,10 @@ Runs an extended pigpio socket command.
  * `extents`: additional data blocks
 """
 function _pigpio_command_ext(sl, cmd, p1, p2, p3, extents, rl=true)
-    ext = IOBuffer()
-    Base.write(ext, Array(reinterpret(UInt8, [cmd, p1, p2, p3])))
-    for x in extents
-       write(ext, string(x))
-    end
+    io = IOBuffer()
+    write(io,Cuint.((cmd, p1, p2, p3))...)
+    ext = vcat(take!(io),extents)
+
     lock(sl.l)
     write(sl.s, ext)
     msg = reinterpret(Cuint, sl.s)[4]
@@ -135,6 +134,10 @@ function _pigpio_command_ext(sl, cmd, p1, p2, p3, extents, rl=true)
          unlock(sl.l)
     end
     return res
+end
+
+function _pigpio_command_ext(sl, cmd, p1, p2, p3, extents::IO, rl=true)
+    _pigpio_command_ext(sl, cmd, p1, p2, p3, take!(extents), rl)
 end
 
 """An ADT class to hold callback information
