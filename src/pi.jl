@@ -129,7 +129,8 @@ function _pigpio_command_ext(sl, cmd, p1, p2, p3, extents, rl=true)
 
     lock(sl.l)
     write(sl.s, ext)
-    msg = reinterpret(Cuint, sl.s)[4]
+    out = IOBuffer(Base.read(sl.s, _SOCK_CMD_LEN))
+    res = reinterpret(Cuint, take!(out))[4]
     if rl
          unlock(sl.l)
     end
