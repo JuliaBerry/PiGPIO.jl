@@ -57,10 +57,14 @@ Pkg.add("PiGPIO")
 
 using PiGPIO
 
-pi=Pi() #connect to pigpiod daemon on localhost
+pi=Pi() # connect to the pigpiod daemon on localhost
 ```
 
 ## Example Usage
+
+The `pin` number corresponds to the GPIO pins
+(General Purpose Input/Output, aka "BCM" or "Broadcom") and not 
+to the physical pin numbers.
 
 ```julia
 set_mode(pi::Pi, pin::Int, mode)
