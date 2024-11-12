@@ -36,10 +36,18 @@ work is done by the daemon. One benefit of working this way is that you can
 remotely access the pi over a network and multiple instances can be connected
 to the daemon simultaneously.
 
-## Launching the Daemon
+## The daemon process `pigpiod`
 
-Launching the daemon requires sudo privileges. Launch by typing `sudo pigpiod`
-in the terminal.
+On Raspberry Pi OS, the daemon `pigpiod` can be installed and launched by using the following shell commands:
+
+```bash
+# install pigpiod
+sudo apt-get install pigpiod
+# enable pigpiod via system D
+sudo systemctl enable pigpiod
+```
+
+The daemon can also be launched manually with `sudo pigpiod` in the terminal.
 
 ## Installation and Usage
 
@@ -49,10 +57,14 @@ Pkg.add("PiGPIO")
 
 using PiGPIO
 
-pi=Pi() #connect to pigpiod daemon on localhost
+pi=Pi() # connect to the pigpiod daemon on localhost
 ```
 
 ## Example Usage
+
+The `pin` number corresponds to the GPIO pins
+(General Purpose Input/Output, aka "BCM" or "Broadcom") and not 
+to the physical pin numbers.
 
 ```julia
 set_mode(pi::Pi, pin::Int, mode)
