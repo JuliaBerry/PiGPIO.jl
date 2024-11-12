@@ -145,7 +145,7 @@ function i2c_write_byte_data(self::Pi, handle, reg, byte_val)
     # I p3 4
     ## extension ##
     # I byte_val
-    extents = IOBuffer
+    extents = IOBuffer()
     write(extents, byte_val)
     return _u2i(_pigpio_command_ext(
         self.sl, _PI_CMD_I2CWB, handle, reg, 4, extents))
@@ -178,7 +178,7 @@ function i2c_write_word_data(self::Pi, handle, reg, word_val)
     # I p3 4
     ## extension ##
     # I word_val
-    extents = IOBuffer
+    extents = IOBuffer()
     write(extents, word_val)
     return _u2i(_pigpio_command_ext(
         self.sl, _PI_CMD_I2CWW, handle, reg, 4, extents))
@@ -257,7 +257,7 @@ function i2c_process_call(self, handle, reg, word_val)
     # I p3 4
     ## extension ##
     # I word_val
-    extents = IOBuffer
+    extents = IOBuffer()
     write(extents, word_val)
     return _u2i(_pigpio_command_ext(
         self.sl, _PI_CMD_I2CPC, handle, reg, 4, extents))
