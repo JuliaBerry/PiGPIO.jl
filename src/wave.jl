@@ -94,13 +94,14 @@ function wave_add_generic(self::Pi, pulses)
     ## extension ##
     # III on/off/delay * pulses
     if length(pulses)
-        ext = bytearray()
+        io = IOBuffer()
         for p in pulses
-        ext.extend(pack("III", p.gpio_on, p.gpio_off, p.delay))
+            # python's struct.pack("III",...) use 3 C unsigned int (normally 4-bytes)
+            write(io,Cuint.((p.gpio_on, p.gpio_off, p.delay))...)
         end
-        extents = [ext]
+        extents = take!(io)
         return _u2i(_pigpio_command_ext(
-            self.sl, _PI_CMD_WVAG, 0, 0, length(pulses)*12, extents))
+            self.sl, _PI_CMD_WVAG, 0, 0, length(pulses)*3*4, extents))
     else
         return 0
     end
@@ -147,9 +148,13 @@ wave_add_serial(pi, 17, 38400, [23, 128, 234], 5000)
 function wave_add_serial(
     self::Pi, user_gpio, baud, data, offset=0, bb_bits=8, bb_stop=2)
     if length(data)
-        extents = [pack("III", bb_bits, bb_stop, offset), data]
+        io = IOBuffer()
+        write(io,Cuint.((bb_bits, bb_stop, offset))...)
+        write(io,data)
+
+        extents = take!(io)
         return _u2i(_pigpio_command_ext(
-            self.sl, _PI_CMD_WVAS, user_gpio, baud, length(data)+12, extents))
+            self.sl, _PI_CMD_WVAS, user_gpio, baud, length(data)+3*4, extents))
     else
         return 0
     end
