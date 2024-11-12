@@ -57,6 +57,8 @@ WAVE_MODE_REPEAT_SYNC  =3
 WAVE_NOT_FOUND = 9998 # Transmitted wave not found.
 NO_TX_WAVE     = 9999 # No wave being transmitted.
 
+_SOCK_CMD_LEN = 16
+
 # pigpio command numbers
 
 _PI_CMD_MODES= 0

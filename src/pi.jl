@@ -104,7 +104,7 @@ Runs a pigpio socket command.
 function _pigpio_command(sl::SockLock, cmd::Integer, p1::Integer, p2::Integer, rl=true)
     lock(sl.l)
     Base.write(sl.s, UInt32.([cmd, p1, p2, 0]))
-    out = IOBuffer(Base.read(sl.s, 16))
+    out = IOBuffer(Base.read(sl.s, _SOCK_CMD_LEN))
     msg = reinterpret(Cuint, take!(out))[4]
     if rl
         unlock(sl.l)
