@@ -3,6 +3,7 @@ module PiGPIO
 
 export Pi
 
+import Base: run
 using Sockets
 
 include("constants.jl")

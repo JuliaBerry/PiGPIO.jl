@@ -220,7 +220,7 @@ end
 
 
 """Runs the notification thread."""
-function run(self::CallbackThread)
+function Base.run(self::CallbackThread)
     lastLevel = _pigpio_command(self.control,  _PI_CMD_BR1, 0, 0)
     MSG_SIZ = 12
     while self.go
