@@ -71,7 +71,7 @@ is negative it indicates an error.  On error a pigpio
 exception will be raised if exceptions is true.
 """
 function _u2i(x::UInt32)
-   v = convert(Int32, x)
+   v = reinterpret(Int32, x)
    if v < 0
       if exceptions
           error(error_text(v))
@@ -762,6 +762,7 @@ then GPIO x is high.
 h = notify_open(pi)
 if h >= 0
     notify_begin(pi, h, 1234)
+end
 ```
 """
 function notify_open(self::Pi)
@@ -784,6 +785,7 @@ The following code starts notifications for GPIO 1, 4,
 h = notify_open(pi)
 if h >= 0
     notify_begin(pi, h, 1234)
+end
 ```
 """
 function notify_begin(self::Pi, handle, bits)
@@ -807,6 +809,7 @@ if h >= 0
     # ...
     notify_begin(pi, h, 1234)
     # ...
+end
 ```
 """
 function notify_pause(self::Pi, handle)
@@ -825,6 +828,7 @@ if h >= 0
     # ...
     notify_close(pi, h)
     # ...
+end
 ```
 """
 function notify_close(self::Pi, handle)
@@ -1288,14 +1292,16 @@ otherwise false.
 
 ```julia
 if wait_for_edge(pi, 23)
-print("Rising edge detected")
+  print("Rising edge detected")
 else
-print("wait for edge timed out")
+  print("wait for edge timed out")
+end
 
 if wait_for_edge(pi, 23, PiGPIO.FALLING_EDGE, 5.0)
-print("Falling edge detected")
+  print("Falling edge detected")
 else
-print("wait for falling edge timed out")
+  print("wait for falling edge timed out")
+end
 ```
 """
 function wait_for_edge(self::Pi, user_gpio, edge=RISING_EDGE, wait_timeout=60.0)

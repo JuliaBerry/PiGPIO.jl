@@ -89,7 +89,7 @@ function spi_open(self::Pi, spi_channel, baud, spi_flags=0)
     ## extension ##
     # I spi_flags
     extents=IOBuffer()
-    write(extents, spi_flags::Cint)
+    write(extents, Cint(spi_flags))
     return _u2i(_pigpio_command_ext(
         self.sl, _PI_CMD_SPIO, spi_channel, baud, 4, extents))
 end
@@ -121,9 +121,10 @@ the error code).
 ```julia
 (b, d) = spi_read(pi, h, 60) # read 60 bytes from device h
 if b == 60
-# process read data
+  # process read data
 else
-# error path
+  # error path
+end
 ```
 """
 function spi_read(self::Pi, handle, count)
@@ -296,7 +297,8 @@ the error code).
 ```julia
 (b, d) = serial_read(pi, h2, 100)
 if b > 0
-# process read data
+  # process read data
+end
 ```
 """
 function serial_read(self::Pi, handle, count)
@@ -349,7 +351,8 @@ device associated with handle.
 rdy = serial_data_available(pi, h1)
 
 if rdy > 0
-(b, d) = serial_read(pi, h1, rdy)
+  (b, d) = serial_read(pi, h1, rdy)
+end
 ```
 """
 function serial_data_available(self::Pi, handle)
@@ -383,7 +386,7 @@ function bb_serial_read_open(self, user_gpio, baud, bb_bits=8)
     ## extension ##
     # I bb_bits
     extents = IOBuffer()
-    write(extents, bb_bits::Cuint)
+    write(extents, Cuint(bb_bits))
     return _u2i(_pigpio_command_ext(
         self.sl, _PI_CMD_SLRO, user_gpio, baud, 4, extents))
 end

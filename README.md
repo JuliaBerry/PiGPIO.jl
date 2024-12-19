@@ -45,6 +45,8 @@ On Raspberry Pi OS, the daemon `pigpiod` can be installed and launched by using 
 sudo apt-get install pigpiod
 # enable pigpiod via system D
 sudo systemctl enable pigpiod
+# start pigpiod now
+sudo systemctl start pigpiod
 ```
 
 The daemon can also be launched manually with `sudo pigpiod` in the terminal.
