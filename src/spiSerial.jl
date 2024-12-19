@@ -383,7 +383,7 @@ function bb_serial_read_open(self, user_gpio, baud, bb_bits=8)
     ## extension ##
     # I bb_bits
     extents = IOBuffer()
-    write(extents, bb_bits::Cuint)
+    write(extents, Cuint(bb_bits))
     return _u2i(_pigpio_command_ext(
         self.sl, _PI_CMD_SLRO, user_gpio, baud, 4, extents))
 end
