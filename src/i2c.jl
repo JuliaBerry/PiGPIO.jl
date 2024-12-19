@@ -324,9 +324,10 @@ the error code).
 ```julia
 (b, d) = i2c_read_block_data(pi, h, 10)
 if b >= 0
-# process data
+  # process data
 else
-# process read failure
+  # process read failure
+end
 ```
 """
 function i2c_read_block_data(self::Pi, handle, reg)

@@ -121,9 +121,10 @@ the error code).
 ```julia
 (b, d) = spi_read(pi, h, 60) # read 60 bytes from device h
 if b == 60
-# process read data
+  # process read data
 else
-# error path
+  # error path
+end
 ```
 """
 function spi_read(self::Pi, handle, count)
@@ -296,7 +297,8 @@ the error code).
 ```julia
 (b, d) = serial_read(pi, h2, 100)
 if b > 0
-# process read data
+  # process read data
+end
 ```
 """
 function serial_read(self::Pi, handle, count)
@@ -349,7 +351,8 @@ device associated with handle.
 rdy = serial_data_available(pi, h1)
 
 if rdy > 0
-(b, d) = serial_read(pi, h1, rdy)
+  (b, d) = serial_read(pi, h1, rdy)
+end
 ```
 """
 function serial_data_available(self::Pi, handle)
