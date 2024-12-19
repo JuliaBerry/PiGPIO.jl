@@ -71,7 +71,7 @@ is negative it indicates an error.  On error a pigpio
 exception will be raised if exceptions is true.
 """
 function _u2i(x::UInt32)
-   v = convert(Int32, x)
+   v = reinterpret(Int32, x)
    if v < 0
       if exceptions
           error(error_text(v))
