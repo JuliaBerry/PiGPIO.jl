@@ -106,8 +106,10 @@ Runs a pigpio socket command.
 function _pigpio_command(sl::SockLock, cmd::Integer, p1::Integer, p2::Integer, rl=true)
     lock(sl.l)
     Base.write(sl.s, UInt32.([cmd, p1, p2, 0]))
-    out = IOBuffer(Base.read(sl.s, _SOCK_CMD_LEN))
-    msg = reinterpret(Cuint, take!(out))[4]
+
+    out = Base.read(sl.s, _SOCK_CMD_LEN)
+    @debug  "_pigpio_command" out
+    msg = reinterpret(Cuint, out)[4]
     if rl
         unlock(sl.l)
     end
@@ -131,8 +133,9 @@ function _pigpio_command_ext(sl, cmd, p1, p2, p3, extents, rl=true)
 
     lock(sl.l)
     write(sl.s, ext)
-    out = IOBuffer(Base.read(sl.s, _SOCK_CMD_LEN))
-    res = reinterpret(Cuint, take!(out))[4]
+    out = Base.read(sl.s, _SOCK_CMD_LEN)
+    @debug  "_pigpio_command_ext" out ext
+    res = reinterpret(Cuint, out)[4]
     if rl
          unlock(sl.l)
     end
