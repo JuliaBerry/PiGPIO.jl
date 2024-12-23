@@ -200,7 +200,7 @@ function spi_xfer(self::Pi, handle, data)
 
     # Don't raise exception.  Must release lock.
     bytes = u2i(_pigpio_command_ext(
-    self.sl, _PI_CMD_SPIX, handle, 0, length(data), data, false))
+        self.sl, _PI_CMD_SPIX, handle, 0, length(data), data, false))
     if bytes > 0
         data = rxbuf(self,bytes)
     else
