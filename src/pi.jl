@@ -64,6 +64,7 @@ function tickDiff(t1, t2)
    return tDiff
 end
 
+u2i(x::UInt32) = signed(x)
 
 """
 Converts a 32 bit unsigned number to signed.  If the number
@@ -79,6 +80,7 @@ function _u2i(x::UInt32)
    end
    return v
 end
+
 
 
 struct InMsg
