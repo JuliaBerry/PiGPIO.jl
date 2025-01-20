@@ -351,7 +351,7 @@ end
 
 """Returns count bytes from the command socket."""
 function rxbuf(self::Pi, count)
-    ext = readbytes(self.sl.s, count, all)
+    ext = Base.read(self.sl.s, count)
     return ext
 end
 
