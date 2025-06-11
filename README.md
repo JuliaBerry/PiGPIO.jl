@@ -19,6 +19,9 @@ Which can be found [here](http://abyz.me.uk/rpi/pigpio/python.html)
 
 Click [here](https://medium.com/@imkimfung/using-julia-to-control-leds-on-a-raspberry-pi-b320be83e503) for an **in-depth tutorial** on how you can control GPIO pins such as LEDs from Julia on the Raspberry Pi.
 
+> [!IMPORTANT]
+> This package relies on the [pigpio daemon which does not support Raspberry Pi 5](https://github.com/JuliaBerry/PiGPIO.jl/issues/24). If you have a Raspberry Pi 5, consider to use 
+[WiringPi.jl](https://github.com/stensmo/WiringPi.jl/)
 ### Features
 
 * OS independent. Only Julia 1.0+ required.
